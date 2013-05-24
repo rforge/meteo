@@ -1,0 +1,5 @@
+importFrom("sp", over)
+importFrom("raster", extract)
+importClassesFrom("GSIF", geosamples)
+importClassesFrom("sp", SpatialPointsDataFrame, SpatialPixelsDataFrame)
+exportPattern("^[^\\.]")
