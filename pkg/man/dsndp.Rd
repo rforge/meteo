@@ -1,16 +1,16 @@
-\name{dtemp_minc}
+\name{dsndp}
 \docType{data}
 \encoding{utf8}
-\alias{dtemp_minc}
-\title{Minimum daily temperature in degrees Celsius for July 2011}
-\description{Sample data set showing values of merged minimum daily temperature measurements from the Global Surface Summary of Day data (GSOD) with European Climate Assessment & Data set (ECA&D) for the month July 2011.}
-\usage{data(dtemp_minc)}
+\alias{dsndp}
+\title{Daily snow depth in cm for July 2011}
+\description{Sample data set showing values of merged daily snow depth measurements from the Global Surface Summary of Day data (GSOD) with European Climate Assessment & Data set (ECA&D) for the month July 2011.}
+\usage{data(dsndp)}
 \format{
-The \code{dtemp_minc} contains the following columns:
+The \code{dsndp} contains the following columns:
   \describe{
   \item{\code{staid}}{character; station ID from GSOD or ECA&D data set}
   \item{\code{time}}{Date; day of the measurement}
-  \item{\code{temp_minc}}{numeric; minimum daily temperature in degrees Celsius}
+  \item{\code{sndp}}{numeric; daily snow depth in cm}
 }
 }
 \note{The data summaries provided here are based on data exchanged under the World Meteorological Organization (WMO) World Weather Watch Program. To prepare a point map, merge with the \code{\link{stations}} table containing stations' coordinates.}
@@ -23,7 +23,7 @@ The \code{dtemp_minc} contains the following columns:
 }
 \examples{
 ## load data and convert to space-time class:
-data(dtemp_minc)
-str(dtemp_minc)
+data(dsndp)
+str(dsndp)
 }
 \keyword{datasets}
