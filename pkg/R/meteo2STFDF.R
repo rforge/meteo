@@ -32,9 +32,10 @@ meteo2STFDF <- function(obs,
   coordinates(st) <-~ lon +lat
   st@proj4string <- crs
 
-  data <- data[,-obs.staid.time]
+  data <- as.data.frame(data[,-obs.staid.time] )
+  names(data)= names(obs)[-obs.staid.time]
   
-  stfdf <-STFDF(st, time , as.data.frame(data) ) 
+  stfdf <-STFDF(st, time , data ) 
   
   return(stfdf)
   

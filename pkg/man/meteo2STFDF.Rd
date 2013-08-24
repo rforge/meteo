@@ -7,7 +7,7 @@
 \item{obs}{ data.frame; observations data frame minimum contains station ID column, time column (day of observation) and measured variable column. It can contain additional variables (columns).}
   \item{stations}{ data.frame; Stations data frame contains at least station ID column, longitude (or x) and latitude (or y) column.It can contain additional variables (columns).}
   \item{obs.staid.time}{ numeric; records the column positions where in \code{obs} (observation) data frame the station ID and time values are stored.}
-  \item{stations.staid.lon.lat}{ numeric; records the column positions where in \code{stations} data frame the station ID, longitude (x) and latidude (y) values are stored.}
+  \item{stations.staid.lon.lat}{ numeric; records the column positions where in \code{stations} data frame the station ID, longitude (x) and latitude (y) values are stored.}
   \item{crs}{ CRS; coordinate reference system (see \link[sp]{CRS}) of \code{stations} coordinates
 }
 }
@@ -24,10 +24,16 @@
 %% ~~objects to See Also as \code{\link{help}}, ~~~
 }
 \examples{
-##---- Should be DIRECTLY executable !! ----
-##-- ==>  Define data, use random,
-##--	or do  help(data=index)  for the standard data sets.
+# load observation - data.frame
+data(dtempc) 
+# load stations - data.frame
+data(stations)
 
+str(dtempc)
+str(stations)
+# create STFDF
+temp <- meteo2STFDF(dtempc,stations)
+str(temp)
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.

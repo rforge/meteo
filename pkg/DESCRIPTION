@@ -1,11 +1,11 @@
 Package: meteo
 Type: Package
-Title: Global meteorological daily records
+Title: Global meteorological daily records, spatio-temporal analysys and mapping
 Version: 0.1-0
 Date: 2012-11-08
 Author: Milan Kilibarda <kili@grf.bg.ac.rs> Contributions by: Tomislav Hengl <tom.hengl@wur.nl>, Melita Percec Tadic <melita@cirus.dhz.hr>
 Maintainer: Milan Kilibarda <kili@grf.bg.ac.rs>
-Description: Global meteorological records merged and sorted so they can be used for spatio-temporal modelling.
+Description: Global meteorological records merged and sorted so they can be used for spatio-temporal modelling. Spatio-temporal regression kriging on the meteorological records.
 License: GPL
 URL: http://meteo.r-forge.r-project.org/
 LazyLoad: yes
