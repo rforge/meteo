@@ -34,6 +34,8 @@ str(stations)
 # create STFDF
 temp <- meteo2STFDF(dtempc,stations)
 str(temp)
+# Adding CRS
+temp@sp@proj4string <- CRS('+proj=longlat +datum=WGS84')
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.

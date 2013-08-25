@@ -1,7 +1,7 @@
 pred.strk <- function (temp,
+                       zcol=1,
                        newdata, # only STFDF
                        pred.id= 'tempPred',
-                       zcol=1,
                        zero.tol=0,
                        dynamic.cov=c(1,2),
                        static.cov=c(1,2),
@@ -29,13 +29,12 @@ pred.strk <- function (temp,
                        cpus=3,
                        sp.nmax=18,
                        time.nmax=2,
-                       longlat= TRUE,
                        fast= FALSE,
                        computeVar=FALSE,
                        do.cv= TRUE,
                        only.cv = FALSE,
                        out.remove = TRUE,
-                       treshold.res=15){
+                       threshold.res=15){
   
   temp <- rm.dupl(temp, zcol,zero.tol)
   gg <- newdata
@@ -54,9 +53,9 @@ pred.strk <- function (temp,
   df= cbind(dyn,sta)
   df <- df[,colSums(is.na(df))<nrow(df)]
   
-  if(nrow(df)==0){
+  if(is.null(df)){
      gg$tlm<-0 
-     temp$tres <- temp@data[,zcol]- temp$tlm
+     temp$tres <- temp@data[,zcol]
      } else {
        
        gg$tlm= reg.coef[1] + as.matrix(df )  %*%  reg.coef[-1]
@@ -99,7 +98,6 @@ pred.strk <- function (temp,
   sfLibrary(spacetime)
   sfLibrary(sp)
   sfExport("vgm.model" )
-  sfExport( "longlat" )
   sfExport( "computeVar" )
   sfExport( "i_1" )
   sfExport( "ip1" )
@@ -130,7 +128,7 @@ pred.strk <- function (temp,
     cv =   sfLapply(1:N_POINTS, function(i) 
     {
       st= temp@sp
-      st$dist=spDists(temp@sp,temp@sp[i,] , longlat = longlat)
+      st$dist=spDists(temp@sp,temp@sp[i,])
       
       tmp_st<-st[ order(st$'dist') , ]
       
@@ -163,7 +161,7 @@ pred.strk <- function (temp,
     bb$sp.ID <-as.character(bb$sp.ID )
     bb$abs.res <-abs(bb$resid.cv )
     bb <- bb[order(bb$abs.res,  decreasing = TRUE),]
-    idsOUT <- unique(bb[which( bb$abs.res > treshold.res),]$sp.ID) 
+    idsOUT <- unique(bb[which( bb$abs.res > threshold.res),]$sp.ID) 
 #     idsOUT <- as.numeric (idsOUT) 
     #     stplot( temp[idsOUT,,c('tempc','pred.cv')] , mode='tp')
 
@@ -190,7 +188,7 @@ pred.strk <- function (temp,
         cv =   sfLapply(1:N_POINTS, function(i) 
         {
           st= cv.temp@sp
-          st$dist=spDists(cv.temp@sp,cv.temp@sp[i,] , longlat = longlat)
+          st$dist=spDists(cv.temp@sp,cv.temp@sp[i,] )
           
           tmp_st<-st[ order(st$'dist') , ]
           
@@ -220,7 +218,7 @@ pred.strk <- function (temp,
         bb$sp.ID <-as.character(bb$sp.ID )
         bb$abs.res <-abs(bb$resid.cv )
         bb <- bb[order(bb$abs.res,  decreasing = TRUE),]
-        idsOUT <- unique(bb[which( bb$abs.res > treshold.res),]$sp.ID) 
+        idsOUT <- unique(bb[which( bb$abs.res > threshold.res),]$sp.ID) 
 #         idsOUT <- as.numeric (idsOUT) 
         
       } # while
@@ -240,9 +238,6 @@ pred.strk <- function (temp,
     idsOUT=NA}
   
   if (!tiling) {
-    dimnames(gg@sp@coords)[[2]] <- c('x','y')
-    Mpoint=data.frame(x=mean(gg@sp@coords[,1]),y=mean(gg@sp@coords[,2]) )
-    coordinates(Mpoint)=~x+y
     
     temp.local<-temp[,,'tres']
     
@@ -288,6 +283,7 @@ pred.strk <- function (temp,
     xy$yg=NULL
     coordinates(xy) = ~ x+y
     xy$index=1:nrow(xy)
+    xy@proj4string <- gg@sp@proj4string
     g_list <- split(xy, xy$g)
     
     # g_list= lapply(g_list,function(i) g[i,])
@@ -310,6 +306,7 @@ pred.strk <- function (temp,
     Mpts= sfLapply(g_list,function(i) {
       Mpoint=data.frame(x=mean(i@coords[,1]),y=mean(i@coords[,2]) )
       coordinates(Mpoint)=~x+y
+      Mpoint@proj4string <- temp@sp@proj4string
       Mpoint   })
     
     # Local obs.
@@ -329,7 +326,7 @@ pred.strk <- function (temp,
       pred.var = 1
       if(computeVar==TRUE){ pred.var=2}
       
-      st$dist=spDists(temp.local@sp,Mpts[[i]],  longlat = longlat)
+      st$dist=spDists(temp.local@sp,Mpts[[i]])
       
       tmp_st<-st[ order(st$'dist') ,]
       
@@ -370,6 +367,7 @@ pred.strk <- function (temp,
       xy$xg=NULL
       xy$yg=NULL
       coordinates(xy) = ~ x+y
+      xy@proj4string <- gg@sp@proj4string
       xy$index=1:nrow(xy)
       g_list <- split(xy, xy$g)
       
@@ -387,6 +385,7 @@ pred.strk <- function (temp,
       Mpts= sfLapply(g_list,function(i) {
         Mpoint=data.frame(x=mean(i@coords[,1]),y=mean(i@coords[,2]) )
         coordinates(Mpoint)=~x+y
+        Mpoint@proj4string <- temp@sp@proj4string
         Mpoint   })
       
       # Local obs.
@@ -406,7 +405,7 @@ pred.strk <- function (temp,
         pred.var = 1
         if(computeVar==TRUE){ pred.var=2}
         
-        st$dist=spDists(temp.local@sp,Mpts[[i]] ,  longlat = longlat)
+        st$dist=spDists(temp.local@sp,Mpts[[i]] )
         
         tmp_st<-st[ order(st$'dist') ,]
         

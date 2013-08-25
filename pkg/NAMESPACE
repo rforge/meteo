@@ -1,5 +1,8 @@
-importFrom("sp", over)
-importFrom("raster", extract)
-importClassesFrom("GSIF", geosamples)
-importClassesFrom("sp", SpatialPointsDataFrame, SpatialPixelsDataFrame)
-exportPattern("^[^\\.]")
+#
+import(sp,
+  rgdal,
+  raster,
+  spacetime
+  snowfall,
+  gstat,
+  plyr)

@@ -4,22 +4,24 @@
 \description{Tiling \link[raster]{raster} or \link[sp]{Spatial-class} Grid or Pixels (data frame) object to smaller parts with optional overlap.
 }
 \usage{
-tiling(filename,tilesize=500,overlapping=50, aspoints= FALSE, asfiles=FALSE,tilename="tile", format="GTiff", tiles_folder=paste(getwd(),'tiles',sep='/'), parallel.processing=TRUE, cpus=6)
+tiling(filename,tilesize=500,overlapping=50, aspoints= FALSE, 
+       asfiles=FALSE,tilename="tile", format="GTiff", tiles_folder=paste(getwd(),'tiles',sep='/'), 
+       parallel.processing=TRUE, cpus=6)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
-  \item{filename}{ raster object, SpatialPixels* object, SpatialGrid* object or file path of raster object stored on the disk (can be read via \link[rgdal]{readGDAL}), for more details see \link[raster]{raster}. The  resolution of object should be the same in x and y direction.
+  \item{filename}{raster object, SpatialPixels* object, SpatialGrid* object or file path of raster object stored on the disk (can be read via \link[rgdal]{readGDAL}), for more details see \link[raster]{raster}. The  resolution of object should be the same in x and y direction.
 }
-  \item{tilesize}{ tile size in cells in x direction. nx = ny is assumed, total number of tile cells is \code{tilesize} by           \code{tilesize}. }
-  \item{overlapping}{ overlapping cells in each direction}
-  \item{aspoints} {if TRUE tiles are in form of \code{SpatialPointsDataFrame} }
+  \item{tilesize}{tile size in cells in x direction. nx = ny is assumed, total number of tile cells is \code{tilesize} by           \code{tilesize}. }
+  \item{overlapping}{overlapping cells in each direction}
+  \item{aspoints}{if TRUE tiles are in form of \code{SpatialPointsDataFrame} }
   \item{asfiles}{if TRUE tiles are stored on local drive as raster objects}
   \item{tilename}{prefix given to file names}
-  \item{format}{ file format, see \link[raster]{writeRaster} }
-  \item{tiles_folder} { folder to be created for tiles storage}
-  \item{parallel.processing}{ if TRUE parralel processing is performed via  \link[snowfall]{sfLapply}
+  \item{format}{file format, see \link[raster]{writeRaster} }
+  \item{tiles_folder}{folder to be created for tiles storage}
+  \item{parallel.processing}{if TRUE parralel processing is performed via  \link[snowfall]{sfLapply}
 }
-  \item{cpus}{ number of proccesing units }
+  \item{cpus}{number of proccesing units}
 }
 \details{
 %%  ~~ If necessary, more details than the description above ~~
