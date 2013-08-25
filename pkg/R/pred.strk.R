@@ -1,32 +1,32 @@
-pred.temp <- function (temp,
+pred.strk <- function (temp,
                        newdata, # only STFDF
                        pred.id= 'tempPred',
                        zcol=1,
                        zero.tol=0,
                        dynamic.cov=c(1,2),
                        static.cov=c(1,2),
-                       reg.coef=list(mean= c(-0.1265044154,0.4051734447,0.4943247727,0.0001837527,-0.0189207588), # Intercept, temp_geo,modis,dem,twi 
-                                     min = c(-0.9825601517,0.5672140021,0.3344561638, 0.0003119777,-0.0243629638),
-                                     max = c(1.7873573081,0.350228076, 0.5569091092, 0.0002571338,-0.0012988123) ) [[ 'mean']] ,
-                       vgm.model=list(mean=vgmST("sumMetric",
+                       reg.coef=list(tmean= c(-0.1265044154,0.4051734447,0.4943247727,0.0001837527,-0.0189207588), # Intercept, temp_geo,modis,dem,twi 
+                                     tmin = c(-0.9825601517,0.5672140021,0.3344561638, 0.0003119777,-0.0243629638),
+                                     tmax = c(1.7873573081,0.350228076, 0.5569091092, 0.0002571338,-0.0012988123) ) [[ 'tmean']] ,
+                       vgm.model=list(tmean=vgmST("sumMetric",
                                                   space=vgm( 14.13, "Sph", 5903, 1.933),
                                                   time =vgm(0, "Sph",  0.1, 0),
                                                   joint=vgm(9.06, "Sph", 2054, 0.474),
                                                   stAni=497.9),
-                                      min = vgmST("sumMetric",
+                                      tmin = vgmST("sumMetric",
                                                   space=vgm( 22.682, "Sph", 5725, 3.695),
                                                   time =vgm(0, "Sph",  0.1, 0),
                                                   joint=vgm(9.457, "Sph",1888, 1.67),
                                                   stAni=485),
-                                      max = vgmST("sumMetric",
+                                     tmax = vgmST("sumMetric",
                                                   space=vgm( 8.31, "Sph", 4930, 2.872),
                                                   time =vgm(0, "Sph",  0.1, 0),
                                                   joint=vgm(11.175, "Sph", 2117, 1.75),
-                                                  stAni=527) ) [['mean']] ,
+                                                  stAni=527) ) [['tmean']] ,
                        tiling= TRUE,
-                       ntiles=300,
+                       ntiles=64,
                        parallel.processing=TRUE,
-                       cpus=6,
+                       cpus=3,
                        sp.nmax=18,
                        time.nmax=2,
                        longlat= TRUE,
@@ -87,8 +87,13 @@ pred.temp <- function (temp,
        
      }
   
+  i_1 <- (1:length(time)) - ceiling(time.nmax/2)
+  i_1[i_1<1]=1        
+  ip1 <- i_1 + floor(time.nmax/2)
+  ip1[ip1>length(time)] <- length(time)  
   
   sfInit ( parallel = parallel.processing , cpus =cpus)
+  if(parallel.processing) {
   sfLibrary(gstat)
   sfLibrary(zoo)
   sfLibrary(spacetime)
@@ -96,16 +101,12 @@ pred.temp <- function (temp,
   sfExport("vgm.model" )
   sfExport( "longlat" )
   sfExport( "computeVar" )
-  
-#   
-  i_1 <- (1:length(time)) - ceiling(time.nmax/2)
-  i_1[i_1<1]=1        
-  ip1 <- i_1 + floor(time.nmax/2)
-  ip1[ip1>length(time)] <- length(time)         
-
   sfExport( "i_1" )
   sfExport( "ip1" )
   sfExport( "time" )
+  }
+  
+#   
 
   gg@sp=as(gg@sp,'SpatialPointsDataFrame')
   row.names(gg@sp) = 1:nrow(gg@sp)
@@ -118,9 +119,10 @@ pred.temp <- function (temp,
     
     N_POINTS <- length(temp@sp@coords[,1])
     
+    if(parallel.processing) {
     sfExport( "temp" )
     sfExport( "N_POINTS" )
-    sfExport( "sp.nmax" )
+    sfExport( "sp.nmax" )   }
     
     
     cv = as.list ( rep(NA, N_POINTS)) 
@@ -177,9 +179,10 @@ pred.temp <- function (temp,
         
         N_POINTS <- length(cv.temp@sp@coords[,1])
         
+        if(parallel.processing) {
         sfExport( "cv.temp" )
         sfExport( "N_POINTS" )
-        sfExport( "sp.nmax" )
+        sfExport( "sp.nmax" )  }
         
         
         cv = as.list ( rep(NA, N_POINTS)) 
@@ -223,6 +226,7 @@ pred.temp <- function (temp,
       } # while
       remove <- temp@sp[remove,]
       robs <- temp[remove,]
+      temp <- cv.temp
     }# remove
     
     
@@ -241,9 +245,11 @@ pred.temp <- function (temp,
     coordinates(Mpoint)=~x+y
     
     temp.local<-temp[,,'tres']
+    
+    if(parallel.processing) {
     sfExport( "temp.local" )
-    sfExport( "gg" )
-    sfExport( "computeVar" )
+    sfExport( "gg" )    } 
+    
     
     xxx<- sfLapply(1:length(time), function(i) {
       
@@ -311,11 +317,12 @@ pred.temp <- function (temp,
     temp.local <-temp[ , ,'tres']
     st=temp.local@sp
     
+    if(parallel.processing) {
     sfExport( "temp.local" )
     sfExport( "st" )
     sfExport( "Mpts" )
     sfExport( "g_list" )
-    sfExport( "sp.nmax" )
+    sfExport( "sp.nmax" ) }
     
     res =   sfLapply(1:length(g_list), function(i) 
     {
@@ -355,7 +362,7 @@ pred.temp <- function (temp,
       dimnames(gg@sp@coords)[[2]] <- c('x','y')
       xy=as.data.frame(gg@sp)
       xy= xy[row.names(gg@sp),]
-      nxy= floor(sqrt(ntiles+0.3*ntiles) )
+      nxy= floor(sqrt(ntiles+ ntiles) )
       xy$xg=as.character( cut(xy$x,nxy,labels=paste("x",1:nxy,sep="") ) )
       xy$yg=as.character( cut(xy$y,nxy,labels=paste("y",1:nxy,sep="") )  )
       #  xy=xy[order(-xy$yg, xy$xg),]
@@ -386,13 +393,13 @@ pred.temp <- function (temp,
       #     temp.local <-temp[local1, ,'tres']
       temp.local <-temp[ , ,'tres']
       st=temp.local@sp
-      
+      if(parallel.processing) {
       sfExport( "temp.local" )
       sfExport( "st" )
       sfExport( "Mpts" )
       sfExport( "g_list" )
       sfExport( "sp.nmax" )
-      sfExport( "computeVar" )
+      sfExport( "computeVar" ) }
       
       res =   sfLapply(1:length(g_list), function(i) 
       {

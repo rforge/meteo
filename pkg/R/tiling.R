@@ -1,23 +1,27 @@
-tiling <- function(filename="/home/kili/data_HDD/SPT/Radno/Preklapanje/modis/LST_Day_1km_2011_12_27.sdat", # path to grid file in SAGA format / raster formats 
-                     tilename="tile", # prexif to be given to tile names
-                     format="GTiff",
-                     asfiles=TRUE,
-                     aspoints= FALSE,
-                     tile_size=5000, # in cells 
-                     overlapping=50, # in cells
-                     tiles_folder=paste(getwd(),'tiles',sep='/'), # resulting folder
-                     parallel.processing=TRUE,
-                     cpus=6) {
-  r=raster(filename)
+tiling <- function(filename="", # path to grid file in SAGA format / raster formats 
+                   tilesize=500, # in cells nx= ny
+                   overlapping=50, # in cells
+                   aspoints= FALSE,
+                   asfiles=FALSE,                   
+                   tilename="tile", # prexif to be given to tile names
+                   format="GTiff",
+                   tiles_folder=paste(getwd(),'tiles',sep='/'), # resulting folder
+                   parallel.processing=TRUE,
+                   cpus=6) {
+  
+if(class(filename)=="RasterLayer") {r=filename} else{r= raster(filename) }
+  
   bb <- extent(r)
   bb <- cbind(c(bb@xmin,bb@xmax),c(bb@ymin,bb@ymax))
+  
+  cel <- res(r) [1]
   
   bb[1,]=bb[1,]-overlapping*cel
   bb[2,]=bb[2,]+overlapping*cel
   
-  cel=GDALinfo(file_path, silent=T) [6]
+ 
   
-  step=tile_size*cel+overlapping*cel
+  step=tilesize*cel+overlapping*cel
   nlon=ceiling(diff(bb[,1]) / step )
   nlat=ceiling(diff(bb[,2]) / step )
   
@@ -50,7 +54,7 @@ tiling <- function(filename="/home/kili/data_HDD/SPT/Radno/Preklapanje/modis/LST
   if(parallel.processing){
     if(!sfParallel()){
     sfInit ( parallel = TRUE, cpus =cpus) 
-    sfst=FALSE}
+    sfst=FALSE}else{sfst=TRUE}
     
     sfLibrary(raster)
     sfLibrary(rgdal)
