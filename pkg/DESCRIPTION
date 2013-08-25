@@ -9,5 +9,5 @@ Description: Global meteorological records merged and sorted so they can be used
 License: GPL
 URL: http://meteo.r-forge.r-project.org/
 LazyLoad: yes
-Depends: R (>= 2.15.0), sp, rgdal, gstat, raster, snowfall, plyr
+Depends: R (>= 2.15.0), sp,spacetime,rgdal, gstat, raster, snowfall, plyr
 Suggests: gstat

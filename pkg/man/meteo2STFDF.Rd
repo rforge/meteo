@@ -2,7 +2,7 @@
 \alias{meteo2STFDF}
 \title{Create an object of \link[spacetime]{STFDF} class from two data frames (observation and stations) }
 \description{The function creates an object of \link[spacetime]{STFDF} class, spatio-temporal data with full space-time grid, from two data frames (observation and stations). Observations data frame minimum contains station ID column, time column (day of observation) and measured variable column. Stations data frame contains at least station ID column, longitude (or x) and latitude (or y) column.}
-\usage{meteo2STFDF(obs, stations, obs.staid.time = c(1, 2), stations.staid.lon.lat = c(1, 2, 3), crs = NA) }
+\usage{meteo2STFDF(obs, stations, obs.staid.time = c(1, 2), stations.staid.lon.lat = c(1, 2, 3), crs=CRS(as.character(NA)) ) }
 \arguments{
 \item{obs}{ data.frame; observations data frame minimum contains station ID column, time column (day of observation) and measured variable column. It can contain additional variables (columns).}
   \item{stations}{ data.frame; Stations data frame contains at least station ID column, longitude (or x) and latitude (or y) column.It can contain additional variables (columns).}
@@ -32,12 +32,12 @@ data(stations)
 str(dtempc)
 str(stations)
 # create STFDF
-temp <- meteo2STFDF(dtempc,stations)
+temp <- meteo2STFDF(dtempc,stations, crs= CRS('+proj=longlat +datum=WGS84'))
 str(temp)
 # Adding CRS
-temp@sp@proj4string <- CRS('+proj=longlat +datum=WGS84')
+
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.
-\keyword{ ~kwd1 }
-\keyword{ ~kwd2 }% __ONLY ONE__ keyword per line
+%\keyword{ ~kwd1 }
+%\keyword{ ~kwd2 }% __ONLY ONE__ keyword per line

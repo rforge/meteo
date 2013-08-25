@@ -50,7 +50,7 @@ pred.strk(temp,zcol = 1, newdata, pred.id = "tempPred", zero.tol = 0,
   \item{only.cv}{if TRUE, only cross validation leave-one-station-out is performed without prediction}
   \item{out.remove}{if TRUE, potential outliers are removed. Removing procedure is iterative, all location with residual higher than defined threshold (\code{treshold.res}) are selected. Only location with highest cross validation residual is removed, than cross validation is done again, the procedure removing one by one location run until all locations have residuals under defined threshold.  
 }
-  \item{treshold.res}{critical threshold for removing potential outliers}
+  \item{threshold.res}{critical threshold for removing potential outliers}
 }
 \details{
 %%  ~~ If necessary, more details than the description above ~~
@@ -103,7 +103,7 @@ res= pred.strk(temp,zcol=1, newdata= regdata[,1:2], threshold.res=10 )
 stplot(res$pred, col.regions=bpy.colors())
 
 # plot cross validation residuals 
-stplot(res$cv[,,'resid.cv'] , , col.regions=bpy.colors())
+stplot(res$cv[,,'resid.cv'] , col.regions=bpy.colors())
 
 # plot locations of removed stations
 spplot(res$remst, zcol='station_name' , col.regions=bpy.colors())
@@ -132,5 +132,5 @@ stplot(rkmod$pred, col.regions=bpy.colors())
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.
-\keyword{ ~kwd1 }
-\keyword{ ~kwd2 }% __ONLY ONE__ keyword per line
+%\keyword{ ~kwd1 }
+%\keyword{ ~kwd2 }% __ONLY ONE__ keyword per line

@@ -1,8 +1,10 @@
 #
 import(sp,
+  spacetime,
   rgdal,
   raster,
-  spacetime
   snowfall,
   gstat,
   plyr)
+export(meteo2STFDF,  pred.strk,  rm.dupl , tgeom2STFDF , tiling)
+

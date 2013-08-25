@@ -1,7 +1,7 @@
 tgeom2STFDF <- function(grid,
                         time,
-                        variable='mean',
                         endTime=delta(time),
+                        variable='mean',
                         ab=NULL) {
   
   temp_geom<-function(day,fi,a=30.419375  , b=-15.539232 ) {

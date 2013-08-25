@@ -23,7 +23,7 @@ The \code{dtempc} contains the following columns:
 }
 \examples{
 ## load data and convert to space-time class:
-data(dtemp)
+data(dtempc)
 str(dtempc)
 }
 \keyword{datasets}
