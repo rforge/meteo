@@ -93,6 +93,7 @@ temp@sp@proj4string <- CRS('+proj=longlat +datum=WGS84')
 # load covariates for mean temperatures
 data(regdata)
 str(regdata)
+regdata@sp@proj4string <- CRS('+proj=longlat +datum=WGS84')
 
 # Calculate prediction of mean temperatures for "2011-07-05" "2011-07-06"
 # global model is used for regression and variogram
