@@ -102,6 +102,7 @@ pred.strk <- function (temp,
   sfExport( "i_1" )
   sfExport( "ip1" )
   sfExport( "time" )
+  sfExport( "temp" )
   }
   
 #   
