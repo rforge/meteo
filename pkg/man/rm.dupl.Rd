@@ -14,7 +14,7 @@ This function finds point pairs with equal spatial coordinates from \link[spacet
 \details{
 %%  ~~ If necessary, more details than the description above ~~
 }
-\value{ \link[spacetime]{STFDF} object with removed duplicate stations. Stations with less observation is removed, if number of observation is the same for two stations the first is removed.
+\value{ \link[spacetime]{STFDF} object with removed duplicate locations. Stations with less observation is removed, if number of observation is the same for two stations the first is removed.
 }
 \references{
 %% ~put references to the literature/web site here ~
