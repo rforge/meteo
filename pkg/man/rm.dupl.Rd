@@ -3,7 +3,7 @@
 \title{Find point pairs with equal spatial coordinates from \link[spacetime]{STFDF} object.
 }
 \description{ 
-Find point pairs with equal spatial coordinates from \link[spacetime]{STFDF} object and remove stations with less observations.
+This function finds point pairs with equal spatial coordinates from \link[spacetime]{STFDF} object and remove locations with less observations.
 }
 \usage{rm.dupl(obj, zcol = 1, zero.tol = 0)}
 \arguments{
