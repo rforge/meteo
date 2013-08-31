@@ -5,7 +5,7 @@ Version: 0.1-0
 Date: 2013-30-08
 Author: Milan Kilibarda, Tomislav Hengl, Edzer Pebesma, Benedikt Graeler
 Maintainer: Milan Kilibarda <kili@grf.bg.ac.rs>
-Description: Global meteorological records merged and sorted so they can be used for spatio-temporal modelling. Spatio-temporal regression kriging on the meteorological records.
+Description: Spatio-temporal regression kriging on the meteorological records. Global regression models and variogram models for spatio-temporal mapping.
 License: GPL
 URL: http://meteo.r-forge.r-project.org/
 LazyLoad: yes
