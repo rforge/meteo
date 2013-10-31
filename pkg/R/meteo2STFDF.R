@@ -16,7 +16,7 @@ meteo2STFDF <- function(obs,
   names(tempdf) <- names(obs)[obs.staid.time]
   
   require(plyr)
-  data <- join(tempdf,obs)
+  data <- merge(tempdf,obs, all.x=TRUE)  # join(tempdf,obs)
 
   data <- data[ order( data[,obs.staid.time[1] ]), ]
   data <- data[ order( data[,obs.staid.time[2] ]), ] # sort like 1st station 1st date, 2nd stations. 1st date ... check it carefuly 
