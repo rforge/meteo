@@ -110,7 +110,7 @@ stplot(res$pred, col.regions=bpy.colors())
 
 
 # res= pred.strk(temp,zcol=1, newdata= regdata[,1:2], 
-#                reg.coef=tregcoef[[1]], vgm.model=tvgms[[1]] 
+#                reg.coef=tregcoef[[1]], vgm.model=tvgms[[1]] , 
 #                threshold.res=3, do.cv=T, out.remove = T)
 ## plot cross validation residuals 
 # stplot(res$cv[,,'resid.cv'] , col.regions=bpy.colors())
