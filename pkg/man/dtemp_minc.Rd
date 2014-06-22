@@ -22,7 +22,7 @@ The \code{dtemp_minc} contains the following columns:
 }
 }
 \examples{
-## load data and convert to space-time class:
+## load data
 data(dtemp_minc)
 str(dtemp_minc)
 }

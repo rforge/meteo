@@ -22,7 +22,7 @@ The \code{dprec} contains the following columns:
 }
 }
 \examples{
-## load data and convert to space-time class:
+## load data 
 data(dprec)
 str(dprec)
 }

@@ -24,7 +24,7 @@ The \code{stations} contains the following columns:
 }
 }
 \examples{
-## load data and convert to space-time class:
+## load data:
 data(stations)
 str(stations)
 coordinates(stations) <-~ lon +lat

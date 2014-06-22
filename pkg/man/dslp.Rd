@@ -22,7 +22,7 @@ The \code{dslp} contains the following columns:
 }
 }
 \examples{
-## load data and convert to space-time class:
+## load data
 data(dslp)
 str(dslp)
 }
