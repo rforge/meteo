@@ -25,7 +25,7 @@ pred.strk(temp,zcol = 1, newdata, pred.id = "tempPred", zero.tol = 0,
                                  stAni=527) ) [['tmean']] ,
         tiling = FALSE, ntiles = 64, parallel.processing = FALSE, cpus = 3, 
         sp.nmax = 18, time.nmax = 2,fast = FALSE, computeVar = FALSE, 
-        do.cv = FALSE, only.cv = FALSE, out.remove = FALSE, threshold.res = 15)
+        do.cv = FALSE, only.cv = FALSE, out.remove = FALSE, threshold.res = 15,progress=TRUE)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -51,6 +51,7 @@ pred.strk(temp,zcol = 1, newdata, pred.id = "tempPred", zero.tol = 0,
   \item{out.remove}{if TRUE, potential outliers are removed. Removing procedure is iterative, all location with residual higher than defined threshold (\code{treshold.res}) are selected. Only location with highest cross validation residual is removed, than cross validation is done again, the procedure removing one by one location run until all locations have residuals under defined threshold.  
 }
   \item{threshold.res}{critical threshold for removing potential outliers}
+  \item{progress}{if FALSE remove progress bar}
 }
 
 \value{
