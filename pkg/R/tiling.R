@@ -6,7 +6,7 @@ tiling <- function(filename="", # path to grid file in SAGA format / raster form
                    tilename="tile", # prexif to be given to tile names
                    format="GTiff",
                    tiles_folder=paste(getwd(),'tiles',sep='/'), # resulting folder
-                   parallel.processing=TRUE,
+                   parallel.processing=FALSE,
                    cpus=6) {
   
 if(class(filename)=="RasterLayer") {r=filename} else{r= raster(filename) }
@@ -89,7 +89,7 @@ if(class(filename)=="RasterLayer") {r=filename} else{r= raster(filename) }
    
   }
 
-  if(sfst) { sfStop() }
+  if(parallel.processing) { sfStop() }
   
 return(tiles)
 }

@@ -23,27 +23,28 @@ pred.strk <- function (temp,
                                                   time =vgm(0, "Sph",  0.1, 0),
                                                   joint=vgm(11.175, "Sph", 2117, 1.75),
                                                   stAni=527) ) [['tmean']] ,
-                       tiling= TRUE,
+                       tiling= FALSE,
                        ntiles=64,
-                       parallel.processing=TRUE,
+                       parallel.processing = FALSE,
                        cpus=3,
                        sp.nmax=18,
                        time.nmax=2,
                        fast= FALSE,
                        computeVar=FALSE,
-                       do.cv= TRUE,
+                       do.cv= FALSE,
                        only.cv = FALSE,
-                       out.remove = TRUE,
+                       out.remove = FALSE,
                        threshold.res=15){
   
   temp <- rm.dupl(temp, zcol,zero.tol)
   gg <- newdata
   time <- gg@time
-     
+  # dynamic predictors  
   if(!is.null(dynamic.cov)) {
    dyn<- as.data.frame ( gg@data[,dynamic.cov] )
-  }else{ dyn<-NA }
+  }else{ dyn<-NA } 
   
+  # dynamic predictors
   if(!is.null(static.cov)  ) {
     sta <- lapply(static.cov, function(i) rep(gg@sp@data[,i],length(time)) )
     sta <- as.data.frame( do.call(cbind,sta) )
@@ -60,39 +61,48 @@ pred.strk <- function (temp,
        
        gg$tlm= reg.coef[1] + as.matrix(df )  %*%  reg.coef[-1]
        gg$tlm<- as.vector(gg$tlm)
-       
+       nrowsp <- length(temp@sp)
        gg@sp=as(gg@sp,'SpatialPixelsDataFrame')
        ov <- sapply(1:length(time),function(i) over(temp@sp,as(gg[,i,'tlm'],'SpatialPixelsDataFrame' ) ) )
        ov <- do.call('cbind',ov)
        ov <- as.vector(ov)
        
-       t1 <- which(as.Date(index(time[1])) == as.Date(index(temp@time)) )
-       t2 <- which(as.Date(index(time[ length(time) ])) == as.Date(index(temp@time)) )
-       temp <- temp[,t1:t2]
+       t1 <- which(as.character(index(time[1])) == as.character( index(temp@time)) )
+       t2 <- which(as.character(index(time[ length(time) ])) == as.character(index(temp@time)) )
+       
+       
+         temp <- temp[,t1:t2, drop=F]
+       
+     
        
        temp$tlm <- ov
        temp$tres <- temp@data[,zcol]- temp$tlm
        
        # count NAs per stations
        numNA <- apply(matrix(temp@data[,'tres'],
-                             nrow=length(temp@sp),byrow=F), MARGIN=1,
+                             nrow=nrowsp,byrow=F), MARGIN=1,
                       FUN=function(x) sum(is.na(x)))
        
        # Remove stations out of covariates
        rem <- numNA != length(time)
-       temp <- temp[rem,]
+       
+         temp <-  temp[rem,drop=F]
+      
+       
+       
 #        row.names(temp@sp) <- 1: nrow(temp@sp)
        
        
-     }
+     } # end of regression 
   
   i_1 <- (1:length(time)) - ceiling(time.nmax/2)
   i_1[i_1<1]=1        
   ip1 <- i_1 + floor(time.nmax/2)
   ip1[ip1>length(time)] <- length(time)  
   
-  sfInit ( parallel = parallel.processing , cpus =cpus)
+  
   if(parallel.processing) {
+  sfInit ( parallel = parallel.processing , cpus =cpus)
   sfLibrary(gstat)
   sfLibrary(zoo)
   sfLibrary(spacetime)
@@ -125,8 +135,9 @@ pred.strk <- function (temp,
     
     
     cv = as.list ( rep(NA, N_POINTS)) 
+    pb <- txtProgressBar(style = 3,char= sprintf("cv ") , max=N_POINTS)
     
-    cv =   sfLapply(1:N_POINTS, function(i) 
+    cv =   (if (parallel.processing) sfLapply else lapply )(1:N_POINTS, function(i) 
     {
       st= temp@sp
       st$dist=spDists(temp@sp,temp@sp[i,])
@@ -138,7 +149,7 @@ pred.strk <- function (temp,
       xxx = as.list ( rep(NA, length(time) ) )
       for( ii in 1:length(time) ) {
         xxx[[ii]]=krigeST(as.formula("tres~1"),
-                          data=as(temp[local_t, i_1[ii]:ip1[ii],'tres'],"STSDF"), 
+                          data=temp[local_t, i_1[ii]:ip1[ii],'tres',drop=F], 
                           newdata=STF(as(temp@sp[i,],"SpatialPoints"),
                                       temp@time[ii],  
                                       temp@endTime[ii]),     
@@ -147,8 +158,10 @@ pred.strk <- function (temp,
         
       } # end of  for
       
-      unlist(xxx)  } ) # end of sfLapply
-    
+      ret=unlist(xxx) 
+      setTxtProgressBar(pb, i )
+      ret } ) # end of (if (parallel.processing) sfLapply else lapply )
+    close(pb)
     cv <- do.call(rbind,cv)
     cv <- as.vector(cv)
     cv.temp <- temp
@@ -167,14 +180,14 @@ pred.strk <- function (temp,
     #     stplot( temp[idsOUT,,c('tempc','pred.cv')] , mode='tp')
 
     if(out.remove==TRUE & length(idsOUT)!=0){
-      
+      pb <- txtProgressBar(style = 3,char= sprintf("remove OUT. "), max=length(temp@sp@coords[,1]) )
       while(length(idsOUT)>0){ 
         
         rm.station = which(row.names(temp@sp)==idsOUT[1])
         remove [rm.station ] <- TRUE
         
         rm.station = which(row.names(cv.temp@sp)==idsOUT[1])
-        cv.temp <- cv.temp[ - rm.station , ]
+        cv.temp <- cv.temp[ - rm.station , drop=F]
         
         N_POINTS <- length(cv.temp@sp@coords[,1])
         
@@ -186,7 +199,7 @@ pred.strk <- function (temp,
         
         cv = as.list ( rep(NA, N_POINTS)) 
         
-        cv =   sfLapply(1:N_POINTS, function(i) 
+        cv =   (if (parallel.processing) sfLapply else lapply )(1:N_POINTS, function(i) 
         {
           st= cv.temp@sp
           st$dist=spDists(cv.temp@sp,cv.temp@sp[i,] )
@@ -198,7 +211,7 @@ pred.strk <- function (temp,
           xxx = as.list ( rep(NA, length(time) ) )
           for( ii in 1:length(time) ) {
             xxx[[ii]]=krigeST(as.formula("tres~1"),
-                              data=as(cv.temp[local_t, i_1[ii]:ip1[ii],'tres'],"STSDF"), 
+                              data=temp[local_t, i_1[ii]:ip1[ii],'tres', drop=F],
                               newdata=STF(as(cv.temp@sp[i,],"SpatialPoints"),
                                           cv.temp@time[ii],  
                                           cv.temp@endTime[ii]),     
@@ -206,8 +219,9 @@ pred.strk <- function (temp,
                               computeVar=computeVar)@data[,1]
             
           } # end of  for
-          
-          unlist(xxx)  } ) # end of sfLapply
+
+          setTxtProgressBar(pb, i )
+          unlist(xxx)  } ) # end of (if (parallel.processing) sfLapply else lapply )
         
         cv <- do.call(rbind,cv)
         cv <- as.vector(cv)
@@ -221,10 +235,11 @@ pred.strk <- function (temp,
         bb <- bb[order(bb$abs.res,  decreasing = TRUE),]
         idsOUT <- unique(bb[which( bb$abs.res > threshold.res),]$sp.ID) 
 #         idsOUT <- as.numeric (idsOUT) 
-        
+     
       } # while
+      close(pb)
       remove <- temp@sp[remove,]
-      robs <- temp[remove,]
+      robs <- temp[remove,drop=F]
       temp <- cv.temp
     }# remove
     
@@ -240,20 +255,22 @@ pred.strk <- function (temp,
   
   if (!tiling) {
     
-    temp.local<-temp[,,'tres']
+    temp.local<-temp[,,'tres',drop=F]
     
     if(parallel.processing) {
     sfExport( "temp.local" )
     sfExport( "gg" )    } 
     
-    
-    xxx<- sfLapply(1:length(time), function(i) {
-      
-      obs=as(temp.local[,i_1[i]:ip1[i],'tres'],"STSDF")
+    pb <- txtProgressBar(style = 3,char= sprintf("pred krigeST ") , max=length(time) )
+    xxx<- (if (parallel.processing) sfLapply else lapply )(1:length(time), function(i) {
+
+      obs=temp.local[,i_1[i]:ip1[i],'tres', drop=F]
+
       pred.var=1
       if(computeVar==TRUE){ pred.var=2}
+      
         
-      krigeST(as.formula("tres~1"),
+      ret= krigeST(as.formula("tres~1"),
               data=obs, # [,1:6] # in this case I must to limit for the fist few days
               newdata=STF(as(gg@sp,"SpatialPoints"),
                           temp.local@time[i],    # [3]    
@@ -261,8 +278,9 @@ pred.strk <- function (temp,
                           temp.local@endTime[i]),    # [3]    
               modelList=vgm.model,
               computeVar=computeVar)@data[,pred.var]
-      
-    } )
+      setTxtProgressBar(pb, i )
+      ret } )
+    close(pb)
 
     res=do.call(cbind,xxx)  
     res= as.vector(res)
@@ -271,7 +289,7 @@ pred.strk <- function (temp,
     stfdf <-gg
 
 
-  }else{ 
+  }else{  # do tiling
     dimnames(gg@sp@coords)[[2]] <- c('x','y')
     xy=as.data.frame(gg@sp)
     xy= xy[row.names(gg@sp),]
@@ -304,7 +322,7 @@ pred.strk <- function (temp,
     
     
     # Middle point for each chunk
-    Mpts= sfLapply(g_list,function(i) {
+    Mpts= (if (parallel.processing) sfLapply else lapply )(g_list,function(i) {
       Mpoint=data.frame(x=mean(i@coords[,1]),y=mean(i@coords[,2]) )
       coordinates(Mpoint)=~x+y
       Mpoint@proj4string <- temp@sp@proj4string
@@ -312,8 +330,8 @@ pred.strk <- function (temp,
     
     # Local obs.
 #     temp.local <-temp[local1, ,'tres']
-    temp.local <-temp[ , ,'tres']
-    st=temp.local@sp
+    temp.local <-temp[ , ,'tres',drop=F]
+    st=temp@sp
     
     if(parallel.processing) {
     sfExport( "temp.local" )
@@ -321,8 +339,10 @@ pred.strk <- function (temp,
     sfExport( "Mpts" )
     sfExport( "g_list" )
     sfExport( "sp.nmax" ) }
-    
-    res =   sfLapply(1:length(g_list), function(i) 
+
+    pb <- txtProgressBar(style = 3,char= sprintf("pred krigeST ") , max=length(g_list))
+
+    res =   (if (parallel.processing) sfLapply else lapply )(1:length(g_list), function(i) 
     {
       pred.var = 1
       if(computeVar==TRUE){ pred.var=2}
@@ -336,7 +356,7 @@ pred.strk <- function (temp,
       xxx = as.list ( rep(NA, length(time) ) )
       for( ii in 1:length(time) ) {
         xxx[[ii]]=krigeST(as.formula("tres~1"),
-                          data=as(temp.local[local_t, i_1[ii]:ip1[ii],'tres'],"STSDF"), 
+                          data=temp.local[local_t, i_1[ii]:ip1[ii],'tres', drop=F], 
                           newdata=STF(as(g_list[[i]],"SpatialPoints"),
                                       temp.local@time[ii],  
                                       temp.local@endTime[ii]),     
@@ -344,13 +364,15 @@ pred.strk <- function (temp,
                           computeVar=computeVar)@data[,pred.var]
       } # end of  for
       
-      do.call(cbind,xxx)  } ) # end of sfLapply
-    
+      ret=do.call(cbind,xxx)
+      setTxtProgressBar(pb, i )
+      ret } ) # end of (if (parallel.processing) sfLapply else lapply )
+    close(pb)
     res=do.call(rbind,res)
     cc=do.call(rbind,g_list)
     g=cc
     
-      stfdf= gg[as.character(g$index),]    
+      stfdf= gg[as.character(g$index),drop=F]    
       res <- as.numeric(res)
       stfdf$temp.pred <- res +stfdf$tlm
     
@@ -383,7 +405,7 @@ pred.strk <- function (temp,
       
       
       # Middle point for each chunk
-      Mpts= sfLapply(g_list,function(i) {
+      Mpts= (if (parallel.processing) sfLapply else lapply )(g_list,function(i) {
         Mpoint=data.frame(x=mean(i@coords[,1]),y=mean(i@coords[,2]) )
         coordinates(Mpoint)=~x+y
         Mpoint@proj4string <- temp@sp@proj4string
@@ -391,7 +413,7 @@ pred.strk <- function (temp,
       
       # Local obs.
       #     temp.local <-temp[local1, ,'tres']
-      temp.local <-temp[ , ,'tres']
+      temp.local <-temp[ , ,'tres', drop = FALSE]
       st=temp.local@sp
       if(parallel.processing) {
       sfExport( "temp.local" )
@@ -400,13 +422,14 @@ pred.strk <- function (temp,
       sfExport( "g_list" )
       sfExport( "sp.nmax" )
       sfExport( "computeVar" ) }
+      pb <- txtProgressBar(style = 3,char= sprintf("pred krigeST "), max=length(g_list) )
       
-      res =   sfLapply(1:length(g_list), function(i) 
+      res =   (if (parallel.processing) sfLapply else lapply )(1:length(g_list), function(i) 
       {
         pred.var = 1
         if(computeVar==TRUE){ pred.var=2}
         
-        st$dist=spDists(temp.local@sp,Mpts[[i]] )
+        st$dist=spDists(temp@sp,Mpts[[i]] ) ###kkk
         
         tmp_st<-st[ order(st$'dist') ,]
         
@@ -415,7 +438,7 @@ pred.strk <- function (temp,
         xxx = as.list ( rep(NA, length(time) ) )
         for( ii in 1:length(time) ) {
           xxx[[ii]]=krigeST(as.formula("tres~1"),
-                            data=as(temp.local[local_t, i_1[ii]:ip1[ii],'tres'],"STSDF"), 
+                            data=temp.local[local_t, i_1[ii]:ip1[ii],'tres', drop=F], 
                             newdata=STF(as(g_list[[i]],"SpatialPoints"),
                                         temp.local@time[ii],  
                                         temp.local@endTime[ii]),     
@@ -424,34 +447,38 @@ pred.strk <- function (temp,
         
         } # end of  for
         
-        do.call(cbind,xxx)  } ) # end of sfLapply
-      
+        ret = do.call(cbind,xxx)  
+        setTxtProgressBar(pb, i )
+        ret } ) # end of (if (parallel.processing) sfLapply else lapply )
+      close(pb)
       res=do.call(rbind,res)
       cc=do.call(rbind,g_list)
       g=cc
       
-      stfdf= gg[as.character(g$index),]    
+      stfdf= gg[as.character(g$index), drop=F]    
       res <- as.numeric(res)
       stfdf$temp.pred <- res +stfdf$tlm
       
-      stfdf<- stfdf[ row.names(stfdf1@sp)  , ]
+      stfdf<- stfdf[ row.names(stfdf1@sp)  , drop=F]
       
       stfdf$temp.pred <- 0.5*stfdf$temp.pred + 0.5*stfdf1$temp.pred
       
       
-    }
+    } # end of fast
     
-  } 
+  } # and of tiling else do tiling
   
   stfdf@sp <- as(stfdf@sp, class(newdata@sp) )
    
-  stfdf <- STFDF(stfdf@sp,stfdf@time, data.frame(stfdf$temp.pred))
+  stfdf <- STFDF(stfdf@sp,stfdf@time, data.frame(stfdf$temp.pred), endTime=stfdf@endTime)
   
   names(stfdf@data) <- pred.id 
   
-
+if (parallel.processing){
+  sfStop() 
+}
   
-  sfStop()
+
   return(list(pred=stfdf,cv =cv.temp, out= idsOUT, remst =remove, remobs=robs) )
 }
   

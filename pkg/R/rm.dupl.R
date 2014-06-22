@@ -22,7 +22,7 @@ rm.dupl <- function(obj,
     
   }
   
-  res = obj[-zs,]
+  res = obj[-zs,drop=F]
   row.names(res@sp)=1:nrow(res@sp)
   } else { 
     res= obj}
