@@ -34,7 +34,8 @@ pred.strk <- function (temp,
                        do.cv= FALSE,
                        only.cv = FALSE,
                        out.remove = FALSE,
-                       threshold.res=15){
+                       threshold.res=15,
+                       progress=TRUE){
   
   temp <- rm.dupl(temp, zcol,zero.tol)
   gg <- newdata
@@ -135,7 +136,7 @@ pred.strk <- function (temp,
     
     
     cv = as.list ( rep(NA, N_POINTS)) 
-    pb <- txtProgressBar(style = 3,char= sprintf("cv ") , max=N_POINTS)
+    if (progress)   pb <- txtProgressBar(style = 3,char= sprintf("cv ") , max=N_POINTS)
     
     cv =   (if (parallel.processing) sfLapply else lapply )(1:N_POINTS, function(i) 
     {
@@ -159,9 +160,9 @@ pred.strk <- function (temp,
       } # end of  for
       
       ret=unlist(xxx) 
-      setTxtProgressBar(pb, i )
+      if (progress)  setTxtProgressBar(pb, i )
       ret } ) # end of (if (parallel.processing) sfLapply else lapply )
-    close(pb)
+    if (progress)  close(pb)
     cv <- do.call(rbind,cv)
     cv <- as.vector(cv)
     cv.temp <- temp
@@ -180,7 +181,7 @@ pred.strk <- function (temp,
     #     stplot( temp[idsOUT,,c('tempc','pred.cv')] , mode='tp')
 
     if(out.remove==TRUE & length(idsOUT)!=0){
-      pb <- txtProgressBar(style = 3,char= sprintf("remove OUT. "), max=length(temp@sp@coords[,1]) )
+      if (progress)   pb <- txtProgressBar(style = 3,char= sprintf("remove OUT. "), max=length(temp@sp@coords[,1]) )
       while(length(idsOUT)>0){ 
         
         rm.station = which(row.names(temp@sp)==idsOUT[1])
@@ -220,7 +221,7 @@ pred.strk <- function (temp,
             
           } # end of  for
 
-          setTxtProgressBar(pb, i )
+          if (progress)  setTxtProgressBar(pb, i )
           unlist(xxx)  } ) # end of (if (parallel.processing) sfLapply else lapply )
         
         cv <- do.call(rbind,cv)
@@ -237,7 +238,7 @@ pred.strk <- function (temp,
 #         idsOUT <- as.numeric (idsOUT) 
      
       } # while
-      close(pb)
+      if (progress)  close(pb)
       remove <- temp@sp[remove,]
       robs <- temp[remove,drop=F]
       temp <- cv.temp
@@ -261,7 +262,7 @@ pred.strk <- function (temp,
     sfExport( "temp.local" )
     sfExport( "gg" )    } 
     
-    pb <- txtProgressBar(style = 3,char= sprintf("pred krigeST ") , max=length(time) )
+    if (progress)   pb <- txtProgressBar(style = 3,char= sprintf("pred krigeST ") , max=length(time) )
     xxx<- (if (parallel.processing) sfLapply else lapply )(1:length(time), function(i) {
 
       obs=temp.local[,i_1[i]:ip1[i],'tres', drop=F]
@@ -278,9 +279,9 @@ pred.strk <- function (temp,
                           temp.local@endTime[i]),    # [3]    
               modelList=vgm.model,
               computeVar=computeVar)@data[,pred.var]
-      setTxtProgressBar(pb, i )
+      if (progress)  setTxtProgressBar(pb, i )
       ret } )
-    close(pb)
+    if (progress)  close(pb)
 
     res=do.call(cbind,xxx)  
     res= as.vector(res)
@@ -340,7 +341,7 @@ pred.strk <- function (temp,
     sfExport( "g_list" )
     sfExport( "sp.nmax" ) }
 
-    pb <- txtProgressBar(style = 3,char= sprintf("pred krigeST ") , max=length(g_list))
+    if (progress)   pb <- txtProgressBar(style = 3,char= sprintf("pred krigeST ") , max=length(g_list))
 
     res =   (if (parallel.processing) sfLapply else lapply )(1:length(g_list), function(i) 
     {
@@ -365,9 +366,9 @@ pred.strk <- function (temp,
       } # end of  for
       
       ret=do.call(cbind,xxx)
-      setTxtProgressBar(pb, i )
+      if (progress)  setTxtProgressBar(pb, i )
       ret } ) # end of (if (parallel.processing) sfLapply else lapply )
-    close(pb)
+    if (progress)  close(pb)
     res=do.call(rbind,res)
     cc=do.call(rbind,g_list)
     g=cc
@@ -422,7 +423,7 @@ pred.strk <- function (temp,
       sfExport( "g_list" )
       sfExport( "sp.nmax" )
       sfExport( "computeVar" ) }
-      pb <- txtProgressBar(style = 3,char= sprintf("pred krigeST "), max=length(g_list) )
+      if (progress)   pb <- txtProgressBar(style = 3,char= sprintf("pred krigeST "), max=length(g_list) )
       
       res =   (if (parallel.processing) sfLapply else lapply )(1:length(g_list), function(i) 
       {
@@ -448,9 +449,9 @@ pred.strk <- function (temp,
         } # end of  for
         
         ret = do.call(cbind,xxx)  
-        setTxtProgressBar(pb, i )
+        if (progress)  setTxtProgressBar(pb, i )
         ret } ) # end of (if (parallel.processing) sfLapply else lapply )
-      close(pb)
+      if (progress)  close(pb)
       res=do.call(rbind,res)
       cc=do.call(rbind,g_list)
       g=cc
