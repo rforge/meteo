@@ -6,9 +6,8 @@
 \usage{
 tiling(filename,tilesize=500,overlapping=50, aspoints= FALSE, 
        asfiles=FALSE,tilename="tile", format="GTiff", tiles_folder=paste(getwd(),'tiles',sep='/'), 
-       parallel.processing=TRUE, cpus=6)
+       parallel.processing=FALSE, cpus=6)
 }
-%- maybe also 'usage' for other objects documented here.
 \arguments{
   \item{filename}{raster object, SpatialPixels* object, SpatialGrid* object or file path of raster object stored on the disk (can be read via \link[rgdal]{readGDAL}), for more details see \link[raster]{raster}. The  resolution of object should be the same in x and y direction.
 }
@@ -23,23 +22,11 @@ tiling(filename,tilesize=500,overlapping=50, aspoints= FALSE,
 }
   \item{cpus}{number of proccesing units}
 }
-\details{
-%%  ~~ If necessary, more details than the description above ~~
-}
 \value{ The list of tiles in raster format or in \code{SpatialPointsDataFrame} format if \code{aspoints=TRUE}
 }
-\references{
-%% ~put references to the literature/web site here ~
-}
 \author{Milan Kilibarda \email{kili@grf.bg.ac.rs}  }
-\note{
-%%  ~~further notes~~
-}
-
-%% ~Make other sections like Warning with \section{Warning }{....} ~
-
 \seealso{
-%% ~~objects to See Also as \code{\link{help}}, ~~~
+\code{\link{pred.strk}}
 }
 \examples{
 data(regdata) 

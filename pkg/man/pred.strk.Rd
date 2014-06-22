@@ -23,9 +23,9 @@ pred.strk(temp,zcol = 1, newdata, pred.id = "tempPred", zero.tol = 0,
                                  time =vgm(0, "Sph",  0.1, 0),
                                  joint=vgm(11.175, "Sph", 2117, 1.75),
                                  stAni=527) ) [['tmean']] ,
-        tiling = TRUE, ntiles = 64, parallel.processing = TRUE, cpus = 3, 
+        tiling = FALSE, ntiles = 64, parallel.processing = FALSE, cpus = 3, 
         sp.nmax = 18, time.nmax = 2,fast = FALSE, computeVar = FALSE, 
-        do.cv = TRUE, only.cv = FALSE, out.remove = TRUE, threshold.res = 15)
+        do.cv = FALSE, only.cv = FALSE, out.remove = FALSE, threshold.res = 15)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -52,9 +52,7 @@ pred.strk(temp,zcol = 1, newdata, pred.id = "tempPred", zero.tol = 0,
 }
   \item{threshold.res}{critical threshold for removing potential outliers}
 }
-\details{
-%%  ~~ If necessary, more details than the description above ~~
-}
+
 \value{
 An list object containing:
   \item{pred}{an object of \link[spacetime]{STFDF-class} with column contains prediction or variance}
@@ -63,16 +61,11 @@ An list object containing:
   \item{remst}{removed locations as an object of \link[sp]{Spatial-class}, if \code{out.remove=TRUE} }
   \item{remobs}{removed locations with observations as an object of \link[spacetime]{STFDF-class}, if \code{out.remove=TRUE} }
 }
-\references{
-%% ~put references to the literature/web site here ~
-}
+
 \author{Milan Kilibarda \email{kili@grf.bg.ac.rs}  }
-\note{
-%%  ~~further notes~~
+\references{
+Kilibarda, M., T. Hengl, G. B. M. Heuvelink, B. Graeler, E. Pebesma, M. Percec Tadic, and B. Bajat (2014), Spatio-temporal interpolation of daily temperatures for global land areas at 1 km resolution, J. Geophys. Res. Atmos., 119, 2294-2313, doi:10.1002/2013JD020803.
 }
-
-%% ~Make other sections like Warning with \section{Warning }{....} ~
-
 \seealso{
  \code{\link{regdata}}
  \code{\link{meteo2STFDF}}
@@ -83,9 +76,16 @@ An list object containing:
 # prepare data
 # load observation - data.frame of mean temperatures
 data(dtempc) 
+str(dtempc)
 data(stations)
+#
+str(stations)
+# lonmin,lonmax,lonmax, lonmin   latmin, latnmin,latmax,latmax
+serbia= point.in.polygon(stations$lon, stations$lat, c(18,22.5,22.5,18), c(40,40,46,46))
+st= stations[ serbia!=0, ]
 # create STFDF
-temp <- meteo2STFDF(dtempc,stations)
+temp <- meteo2STFDF(dtempc,st)
+rm(dtempc)
 str(temp)
 # Adding CRS
 temp@sp@proj4string <- CRS('+proj=longlat +datum=WGS84')
@@ -97,41 +97,51 @@ regdata@sp@proj4string <- CRS('+proj=longlat +datum=WGS84')
 
 # Calculate prediction of mean temperatures for "2011-07-05" "2011-07-06"
 # global model is used for regression and variogram
+# load precalculated variograms
+data(tvgms)
+data(tregcoef)
+res= pred.strk(temp,zcol=1, newdata= regdata[,1:2], 
+              reg.coef=tregcoef[[1]] ,vgm.model=tvgms[[1]] )
 
-res= pred.strk(temp,zcol=1, newdata= regdata[,1:2], threshold.res=10 )
+# res <-  pred.strk(temp,zcol=1, newdata=  regdata[,1,drop=F],vgm.model=tvgms[[1]] )
 
 # plot prediction
 stplot(res$pred, col.regions=bpy.colors())
 
-# plot cross validation residuals 
-stplot(res$cv[,,'resid.cv'] , col.regions=bpy.colors())
 
-# plot locations of removed stations
-spplot(res$remst, zcol='station_name' , col.regions=bpy.colors())
+# res= pred.strk(temp,zcol=1, newdata= regdata[,1:2], 
+#                reg.coef=tregcoef[[1]], vgm.model=tvgms[[1]] 
+#                threshold.res=3, do.cv=T, out.remove = T)
+## plot cross validation residuals 
+# stplot(res$cv[,,'resid.cv'] , col.regions=bpy.colors())
+
+## plot locations of removed stations
+# spplot(res$remst, zcol='station_name' , col.regions=bpy.colors())
 # plot removed stations as time-series
-stplot(res$remobs[1:3,1:2,c('tempc','pred.cv')], mode='tp')
+# stplot(res$remobs[1:3,1:2,c('tempc','pred.cv')], mode='tp')
 
-row.names(res$remobs@sp) = res$remst$station_name
-res$remobs[1:3,1:2,c('tempc','pred.cv')]
-stplot(res$remobs[1:3,1:2,c('tempc','pred.cv')], mode='tp')
+# row.names(res$remobs@sp) = res$remst$station_name
+# res$remobs[1:3,1:2,c('tempc','pred.cv')]
+# stplot(res$remobs[1:3,1:2,c('tempc','pred.cv')], mode='tp')
 
 # Calculate prediction of mean temperature for "2011-07-05" "2011-07-06"
 # only MODIS is used as covariate
 
-rkmod <-  pred.strk(temp,zcol=1, newdata= regdata[,1:2], threshold.res=10, 
-              dynamic.cov='modis', static.cov=NULL,
-               reg.coef= c(-0.23,0.7303284),
-               vgm.model= vgmST("sumMetric",space=vgm( 18.27, "Sph", 6000, 3.22),
+modisVGM =vgmST("sumMetric",space=vgm( 18.27, "Sph", 6000, 3.22),
                                            time =vgm(0, "Sph",  0.1, 0),
                                            joint=vgm(8.34, "Sph", 2349, 1.80),
-                                           stAni=583) )
+                                           stAni=583)
+attr(modisVGM,"temporal unit") = "days"                                           
+
+rkmod <-  pred.strk(temp,zcol=1, newdata= STFDF(regdata@sp,
+                time=as.POSIXct("2011-07-05"), endTime=as.POSIXct("2011-07-06"), 
+                data=regdata[,1]@data) , threshold.res=10, 
+              dynamic.cov='modis', static.cov=NULL,
+               reg.coef= c(-0.23,0.7303284),
+               vgm.model= modisVGM  )
                                            
 # coeficients and variogram is calculted globally for GSOD and ECA&D obs. for 2011 year 
 
 stplot(rkmod$pred, col.regions=bpy.colors())
-
 }
-% Add one or more standard keywords, see file 'KEYWORDS' in the
-% R documentation directory.
-%\keyword{ ~kwd1 }
-%\keyword{ ~kwd2 }% __ONLY ONE__ keyword per line
+

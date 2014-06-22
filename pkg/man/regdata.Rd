@@ -15,11 +15,7 @@ The \code{regdata} contains the following dynamic and static covariates:
    \item{\code{regdata@sp$twi}}{numeric; SAGA Topographic Wetness Index (TWI) from Worldgrids (\url{http://worldgrids.org/})}
 }
 }
-%%\note{The data summaries provided here are based on data exchanged under the World Meteorological Organization (WMO) World Weather Watch Program. To prepare a point map, merge with the \code{\link{stations}} table containing stations' coordinates.}
 \author{Milan Kilibarda \email{kili@grf.bg.ac.rs}}
-\references{
-%%
-}
 \examples{
 data(regdata)
 str(regdata)
@@ -29,7 +25,5 @@ stplot(regdata[,,'modis']) # plot modis data
 spplot(regdata@sp,zcol='twi', col.regions = bpy.colors() ) # plot TWI
 
 spplot(regdata@sp,zcol='dem', col.regions = bpy.colors() ) # plot dem
-
-
 }
 \keyword{datasets}

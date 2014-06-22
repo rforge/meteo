@@ -11,24 +11,13 @@ This function finds point pairs with equal spatial coordinates from \link[spacet
   \item{zcol}{ variable column name, or column number, from obj@data }
   \item{zero.tol}{distance values less than or equal to this threshold value are considered as duplicates}
 }
-\details{
-%%  ~~ If necessary, more details than the description above ~~
-}
 \value{ \link[spacetime]{STFDF} object with removed duplicate locations. Stations with less observation is removed, if number of observation is the same for two stations the first is removed.
-}
-\references{
-%% ~put references to the literature/web site here ~
 }
 \author{Milan Kilibarda \email{kili@grf.bg.ac.rs}
 }
-\note{
-%%  ~~further notes~~
-}
-
-%% ~Make other sections like Warning with \section{Warning }{....} ~
-
 \seealso{
-%% ~~objects to See Also as \code{\link{help}}, ~~~
+\code{\link{tgeom2STFDF}}
+\code{\link{pred.strk}}
 }
 \examples{
 # load observation - data frame
@@ -45,9 +34,5 @@ nrow(temp@sp) # number of stations before removing dupl.
 
 temp2 <-rm.dupl(temp)
 nrow(temp2@sp) # number of stations after
-
 }
-% Add one or more standard keywords, see file 'KEYWORDS' in the
-% R documentation directory.
-\keyword{ ~kwd1 }
-\keyword{ ~kwd2 }% __ONLY ONE__ keyword per line
+

@@ -16,7 +16,6 @@ The \code{stations} contains the following columns:
   \item{\code{station_name}}{character; station name}
 }
 }
-\note{}
 \author{Milan Kilibarda and Tomislav Hengl}
 \references{
 \itemize{
