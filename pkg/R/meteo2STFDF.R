@@ -1,9 +1,8 @@
-<<<<<<< .mine
 meteo2STFDF <- function(obs,
-         stations,
-         obs.staid.time=c(1,2),
-         stations.staid.lon.lat=c(1,2,3),
-         crs=CRS(as.character(NA)) ){
+                        stations,
+                        obs.staid.time=c(1,2),
+                        stations.staid.lon.lat=c(1,2,3),
+                        crs=CRS(as.character(NA)) ){
   
   ids <- unique(stations[,obs.staid.time[1]])
   
@@ -16,9 +15,9 @@ meteo2STFDF <- function(obs,
   tempdf <- data.frame(rep(ids,nt),rep(time,ns) )
   names(tempdf) <- names(obs)[obs.staid.time]
   
-#   require(plyr)
+  #   require(plyr)
   data <- join(tempdf,obs)
-
+  
   data <- data[ order( data[,obs.staid.time[1] ]), ]
   data <- data[ order( data[,obs.staid.time[2] ]), ] # sort like 1st station 1st date, 2nd stations. 1st date ... check it carefuly 
   row.names(data) <- 1:length(data[,1])
@@ -32,7 +31,7 @@ meteo2STFDF <- function(obs,
   names(st)[ stations.staid.lon.lat[2:3] ] <- c('lon', 'lat')
   coordinates(st) <-~ lon +lat
   st@proj4string <- crs
-
+  
   data <- as.data.frame(data[,-obs.staid.time] )
   names(data)= names(obs)[-obs.staid.time]
   
@@ -48,47 +47,4 @@ meteo2STFDF <- function(obs,
   
   return(stfdf)
   
-=======
-meteo2STFDF <- function(obs,
-         stations,
-         obs.staid.time=c(1,2),
-         stations.staid.lon.lat=c(1,2,3),
-         crs=CRS(as.character(NA)) ){
-  
-  ids <- unique(obs[,obs.staid.time[1] ])
-  
-  time <- unique(obs[,obs.staid.time[2] ])
-  time <- sort(time)
-  
-  nt <- length(time)
-  ns <- length(ids) 
-  
-  tempdf <- data.frame(rep(ids,nt),rep(time,ns) )
-  names(tempdf) <- names(obs)[obs.staid.time]
-  
-  require(plyr)
-  data <- merge(tempdf,obs, all.x=TRUE)  # join(tempdf,obs)
-
-  data <- data[ order( data[,obs.staid.time[1] ]), ]
-  data <- data[ order( data[,obs.staid.time[2] ]), ] # sort like 1st station 1st date, 2nd stations. 1st date ... check it carefuly 
-  row.names(data) <- 1:length(data[,1])
-  
-  # system.time( merge(tempdf,obs, all=TRUE) )
-  # system.time(join(tempdf,obs) )
-  # join is 2 x faster
-  ids <- data.frame(staid=ids)
-  names(ids) <- names(stations) [ stations.staid.lon.lat[1] ]
-  st <- join( ids, stations)
-  names(st)[ stations.staid.lon.lat[2:3] ] <- c('lon', 'lat')
-  coordinates(st) <-~ lon +lat
-  st@proj4string <- crs
-
-  data <- as.data.frame(data[,-obs.staid.time] )
-  names(data)= names(obs)[-obs.staid.time]
-  
-  stfdf <-STFDF(st, time , data ) 
-  
-  return(stfdf)
-  
->>>>>>> .r24
 }
