@@ -1,8 +1,8 @@
 Package: meteo
 Type: Package
 Title: Spatio-temporal analysys and mapping of metorological observations
-Version: 0.1-0
-Date: 2013-30-08
+Version: 0.1-1
+Date: 2014-06-22
 Author: Milan Kilibarda, Tomislav Hengl, Edzer Pebesma, Benedikt Graeler
 Maintainer: Milan Kilibarda <kili@grf.bg.ac.rs>
 Description: The meteo package provides functionality to spatio-temporal analysys and mapping of meteorological data. Global spatio-temporal models calculated using publicly available data are stored in package.
