@@ -11,30 +11,28 @@
   \item{crs}{ CRS; coordinate reference system (see \link[sp]{CRS}) of \code{stations} coordinates
 }
 }
-\details{
-%%  ~~ If necessary, more details than the description above ~~
-}
 \value{ \link[spacetime]{STFDF} object}
-\references{
-%% ~put references to the literature/web site here ~
-}
 \author{Milan Kilibarda \email{kili@grf.bg.ac.rs}}
 \note{The function is intended for conversion of meteorological data to \link[spacetime]{STFDF} object, but can be used for similar spatio temporal data stored in two separated tables.}
 \seealso{
-%% ~~objects to See Also as \code{\link{help}}, ~~~
+\code{\link{tgeom2STFDF}}
+\code{\link{pred.strk}}
 }
 \examples{
-# load observation - data.frame
+# prepare data
+# load observation - data.frame of mean temperatures
 data(dtempc) 
-# load stations - data.frame
-data(stations)
-
 str(dtempc)
+data(stations)
+#
 str(stations)
+lonmin=18 ;lonmax=22.5 ; latmin=40 ;latmax=46
+serbia= point.in.polygon(stations$lon, stations$lat, c(lonmin,lonmax,lonmax,lonmin), c(latmin,latmin,latmax,46))
+st= stations[ serbia!=0, ] # stations in Serbia approx.
 # create STFDF
 temp <- meteo2STFDF(dtempc,stations, crs= CRS('+proj=longlat +datum=WGS84'))
 str(temp)
-# Adding CRS
+
 
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
