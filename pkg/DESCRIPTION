@@ -9,5 +9,4 @@ Description: The meteo package provides functionality to spatio-temporal analysy
 License: GPL
 URL: http://meteo.r-forge.r-project.org/
 LazyLoad: yes
-Depends: R (>= 2.15.0), sp,spacetime,rgdal, gstat, raster, snowfall, plyr
-Suggests: gstat
+Depends: R (>= 2.15.0), sp,spacetime,rgdal, gstat, raster, snowfall, plyr, gstat
