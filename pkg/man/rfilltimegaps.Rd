@@ -20,13 +20,13 @@ Kilibarda, M., T. Hengl, G. B. M. Heuvelink, B. Graeler, E. Pebesma, M. Percec T
 \code{\link{pred.strk}}
 }
 \examples{
-   data(nlmodis20110602)
-   data(nlmodis20110610)
+   data(nlmodis20110704)
+   data(nlmodis20110710)
    data(NLpol)
    
    # fill spatial gaps
-   r1=rfillspgaps(nlmodis20110602,NLpol)
-   r2=rfillspgaps(nlmodis20110610,NLpol)
+   r1=rfillspgaps(nlmodis20110704,NLpol)
+   r2=rfillspgaps(nlmodis20110710,NLpol)
    
    r1 <- as(r1,"SpatialPixelsDataFrame")
    names(r1)='m1'
@@ -36,10 +36,10 @@ Kilibarda, M., T. Hengl, G. B. M. Heuvelink, B. Graeler, E. Pebesma, M. Percec T
    r1@data <- cbind(r1@data, r2@data)
    
    df <- reshape(r1@data, varying=list(1:2), v.names="modis", direction="long", 
-                 times=as.Date(c('2011-06-02','2011-06-10')), ids=1:dim(r1)[1])
+                 times=as.Date(c('2011-07-04','2011-07-12')), ids=1:dim(r1)[1])
    
    stMODIS<- STFDF(as(r1, "SpatialPixels"), 
-                  time= as.Date(c('2011-06-02','2011-06-10')), 
+                  time= as.Date(c('2011-07-04','2011-07-12')), 
                   data.frame(modis=df[,'modis']))
    
    # stplot(stMODIS, col.regions=bpy.colors())

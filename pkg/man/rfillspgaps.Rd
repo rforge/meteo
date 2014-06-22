@@ -20,12 +20,12 @@ Kilibarda, M., T. Hengl, G. B. M. Heuvelink, B. Graeler, E. Pebesma, M. Percec T
 \code{\link{pred.strk}}
 }
 \examples{
-   data(nlmodis20110610)
+   data(nlmodis20110712)
    data(NLpol)
    
-   # spplot(nlmodis20110610, col.regions=bpy.colors())
+   # spplot(nlmodis20110712, col.regions=bpy.colors())
    # fill spatial gaps
-   r=rfillspgaps(nlmodis20110610,NLpol)
+   r=rfillspgaps(nlmodis20110712,NLpol)
    # spplot(r, col.regions=bpy.colors())
   
 }
