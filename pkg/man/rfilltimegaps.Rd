@@ -21,12 +21,12 @@ Kilibarda, M., T. Hengl, G. B. M. Heuvelink, B. Graeler, E. Pebesma, M. Percec T
 }
 \examples{
    data(nlmodis20110704)
-   data(nlmodis20110710)
+   data(nlmodis20110712)
    data(NLpol)
    
    # fill spatial gaps
    r1=rfillspgaps(nlmodis20110704,NLpol)
-   r2=rfillspgaps(nlmodis20110710,NLpol)
+   r2=rfillspgaps(nlmodis20110712,NLpol)
    
    r1 <- as(r1,"SpatialPixelsDataFrame")
    names(r1)='m1'
