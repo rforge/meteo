@@ -104,10 +104,10 @@ pred.strk <- function (temp,
   
   if(parallel.processing) {
   sfInit ( parallel = parallel.processing , cpus =cpus)
-  sfLibrary(gstat)
-  sfLibrary(zoo)
-  sfLibrary(spacetime)
-  sfLibrary(sp)
+  sfLibrary("gstat")
+  sfLibrary("zoo")
+  sfLibrary("spacetime")
+  sfLibrary("sp")
   sfExport("vgm.model" )
   sfExport( "computeVar" )
   sfExport( "i_1" )

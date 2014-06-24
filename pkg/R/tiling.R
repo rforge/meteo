@@ -56,8 +56,8 @@ if(class(filename)=="RasterLayer") {r=filename} else{r= raster(filename) }
     sfInit ( parallel = TRUE, cpus =cpus) 
     sfst=FALSE}else{sfst=TRUE}
     
-    sfLibrary(raster)
-    sfLibrary(rgdal)
+    sfLibrary("raster")
+    sfLibrary("rgdal")
     
     sfExport( "poll" )
     sfExport( "r" )
