@@ -32,6 +32,7 @@ tiling(filename,tilesize=500,overlapping=50, aspoints= FALSE,
 data(regdata) 
 str(regdata@sp) # DEM and TWI data for Serbia at 1 km resolution
 dem=regdata@sp['dem']
+library(sp)
 spplot(dem,  col.regions=bpy.colors() )
 
 str(dem)

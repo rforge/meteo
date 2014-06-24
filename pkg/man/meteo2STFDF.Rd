@@ -27,7 +27,9 @@ data(stations)
 #
 str(stations)
 lonmin=18 ;lonmax=22.5 ; latmin=40 ;latmax=46
-serbia= point.in.polygon(stations$lon, stations$lat, c(lonmin,lonmax,lonmax,lonmin), c(latmin,latmin,latmax,46))
+library(sp)
+library(spacetime)
+serbia = point.in.polygon(stations$lon, stations$lat, c(lonmin,lonmax,lonmax,lonmin), c(latmin,latmin,latmax,46))
 st= stations[ serbia!=0, ] # stations in Serbia approx.
 # create STFDF
 temp <- meteo2STFDF(dtempc,st, crs= CRS('+proj=longlat +datum=WGS84'))

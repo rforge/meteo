@@ -38,6 +38,7 @@ Kilibarda, M., T. Hengl, G. B. M. Heuvelink, B. Graeler, E. Pebesma, M. Percec T
    df <- reshape(r1@data, varying=list(1:2), v.names="modis", direction="long", 
                  times=as.Date(c('2011-07-04','2011-07-12')), ids=1:dim(r1)[1])
    
+   library(spacetime)
    stMODIS<- STFDF(as(r1, "SpatialPixels"), 
                   time= as.Date(c('2011-07-04','2011-07-12')), 
                   data.frame(modis=df[,'modis']))

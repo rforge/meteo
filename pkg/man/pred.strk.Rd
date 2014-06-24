@@ -79,6 +79,9 @@ Kilibarda, M., T. Hengl, G. B. M. Heuvelink, B. Graeler, E. Pebesma, M. Percec T
 data(dtempc) 
 str(dtempc)
 data(stations)
+library(sp)
+library(spacetime)
+library(gstat)
 #
 str(stations)
 # lonmin,lonmax,lonmax, lonmin   latmin, latnmin,latmax,latmax
@@ -145,4 +148,3 @@ rkmod <-  pred.strk(temp,zcol=1, newdata= STFDF(regdata@sp,
 
 stplot(rkmod$pred, col.regions=bpy.colors())
 }
-

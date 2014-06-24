@@ -22,6 +22,8 @@ Kilibarda, M., T. Hengl, G. B. M. Heuvelink, B. Graeler, E. Pebesma, M. Percec T
 }
 \author{Milan Kilibarda \email{kili@grf.bg.ac.rs} }
 \examples{
+library(sp)
+library(spacetime)
 pos <- SpatialPoints(coords = cbind(19.22,45.33)) # create one point from lon lat
 tg1 <- tgeom2STFDF(pos,as.POSIXct("2011-01-01"), endTime=as.POSIXct("2011-01-02") )  # temp_geom for 1st Jan 2011
 tg1

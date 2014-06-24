@@ -19,6 +19,8 @@ The \code{regdata} contains the following dynamic and static covariates:
 \examples{
 data(regdata)
 str(regdata)
+library(sp) # spplot
+library(spacetime) # stplot
 
 stplot(regdata[,,'modis']) # plot modis data
 
