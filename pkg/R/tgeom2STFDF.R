@@ -1,6 +1,5 @@
 tgeom2STFDF <- function(grid,
                         time,
-                        endTime=delta(time),
                         variable='mean',
                         ab=NULL) {
   
@@ -22,7 +21,10 @@ tgeom2STFDF <- function(grid,
      b <- -15.43029
    }else{
      a <- 30.419375
-     b <- -15.539232 
+     b <- -15.539232
+     if(variable!='mean'){
+       warning("variable argument is not valid! 'mean' is used.")
+     }
    }
  } else{
    a <- ab[1]
@@ -36,6 +38,7 @@ tgeom2STFDF <- function(grid,
   
   if(!is.na(grid@proj4string@projargs )){ grid1 <- spTransform(grid, CRS('+proj=longlat +datum=WGS84') ) } else { grid1 <- grid}
   
+  time <- as.POSIXct(sort(time))
   day<- as.numeric( strftime(time, format = "%j") )
   
   tg<-lapply(day, function(i) temp_geom(i,grid1@coords[,2],a,b) )
@@ -43,9 +46,13 @@ tgeom2STFDF <- function(grid,
   tg=as.vector(tg)
   tg=data.frame(temp_geo=tg)
   
+  if(length(time)==1){
+    endTime=time+86400
+  } else{
+    endTime=delta(time)
+  }
+
   res <- STFDF(grid,time,data=tg,endTime=endTime)
   
   return(res)
 }
-
-# time = seq(as.POSIXct("2011-01-01"), as.POSIXct("2011-01-07"), by="day")

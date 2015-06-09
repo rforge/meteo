@@ -44,8 +44,8 @@ pred.strk <- function (temp,
   if(!is.null(dynamic.cov)) {
    dyn<- as.data.frame ( gg@data[,dynamic.cov] )
   }else{ dyn<-NA } 
-  
-  # dynamic predictors
+  if(only.cv){ do.cv=TRUE}
+  # static predictors
   if(!is.null(static.cov)  ) {
     sta <- lapply(static.cov, function(i) rep(gg@sp@data[,i],length(time)) )
     sta <- as.data.frame( do.call(cbind,sta) )
@@ -60,7 +60,7 @@ pred.strk <- function (temp,
      temp$tres <- temp@data[,zcol]
      } else {
        
-       gg$tlm= reg.coef[1] + as.matrix(df )  %*%  reg.coef[-1]
+       gg$tlm= reg.coef[1] + as.matrix(df )  %*%  reg.coef[-1] #regression model-trend
        gg$tlm<- as.vector(gg$tlm)
        nrowsp <- length(temp@sp)
        gg@sp=as(gg@sp,'SpatialPixelsDataFrame')
@@ -77,7 +77,7 @@ pred.strk <- function (temp,
      
        
        temp$tlm <- ov
-       temp$tres <- temp@data[,zcol]- temp$tlm
+       temp$tres <- temp@data[,zcol]- temp$tlm #residuals
        
        # count NAs per stations
        numNA <- apply(matrix(temp@data[,'tres'],
@@ -104,10 +104,10 @@ pred.strk <- function (temp,
   
   if(parallel.processing) {
   sfInit ( parallel = parallel.processing , cpus =cpus)
-  sfLibrary("gstat")
-  sfLibrary("zoo")
-  sfLibrary("spacetime")
-  sfLibrary("sp")
+  sfLibrary(gstat)
+  sfLibrary(zoo)
+  sfLibrary(spacetime)
+  sfLibrary(sp)
   sfExport("vgm.model" )
   sfExport( "computeVar" )
   sfExport( "i_1" )
@@ -254,7 +254,7 @@ pred.strk <- function (temp,
     cv.temp =NA
     idsOUT=NA}
   
-  if (!tiling) {
+  if (!tiling) { #prediction
     
     temp.local<-temp[,,'tres',drop=F]
     
@@ -263,7 +263,7 @@ pred.strk <- function (temp,
     sfExport( "gg" )    } 
     
     if (progress)   pb <- txtProgressBar(style = 3,char= sprintf("pred krigeST ") , max=length(time) )
-    xxx<- (if (parallel.processing) sfLapply else lapply )(1:length(time), function(i) {
+    xxx<- (if (parallel.processing & length(time)>1) sfLapply else lapply )(1:length(time), function(i) {
 
       obs=temp.local[,i_1[i]:ip1[i],'tres', drop=F]
 
@@ -488,3 +488,4 @@ if (parallel.processing){
   
   
   
+

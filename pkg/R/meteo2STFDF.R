@@ -2,17 +2,21 @@ meteo2STFDF <- function(obs,
                         stations,
                         obs.staid.time=c(1,2),
                         stations.staid.lon.lat=c(1,2,3),
-                        crs=CRS(as.character(NA)) ){
-  
+                        crs=CRS(as.character(NA)),
+                        delta=NULL
+                        ) {
+ 
+           
   ids <- unique(stations[,obs.staid.time[1]])
   
   time <- unique(obs[,obs.staid.time[2] ])
-  time <- sort(time)
+  time <- as.POSIXlt(sort(time))
   
   nt <- length(time)
   ns <- length(ids) # num os stations
   
-  tempdf <- data.frame(rep(ids,nt),rep(time,ns) )
+  
+  tempdf <- data.frame(rep(ids,nt),rep(time,each=ns) ) 
   names(tempdf) <- names(obs)[obs.staid.time]
   
   #   require(plyr)
@@ -35,14 +39,23 @@ meteo2STFDF <- function(obs,
   data <- as.data.frame(data[,-obs.staid.time] )
   names(data)= names(obs)[-obs.staid.time]
   
-  stfdf <-STFDF(st, time , data ) 
-  
+  if (is.null(delta) && length(time)==1){
+    endTime <- time + 86400
+    stfdf <-STFDF(st, time , data, endTime)
+  } else if (is.null(delta) && length(time)!=1) {
+    stfdf <-STFDF(st, time , data)
+  } else {
+    endTime <- time + delta
+    stfdf <-STFDF(st, time , data, endTime)
+  }
+
   # count NAs per stations
   bools2 <- apply(matrix(stfdf@data[,1],
                          nrow=length(stfdf@sp),byrow=F), MARGIN=1,
                   FUN=function(x) sum(is.na(x)))
   # remove all NA
-  stfdf=stfdf[bools2!=nt,]
+  stfdf1=stfdf[bools2!=nt,drop=F]
+  
   row.names(stfdf@sp) <- 1:nrow(stfdf@sp)
   
   return(stfdf)

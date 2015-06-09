@@ -2,9 +2,9 @@ rfilltimegaps <- function(stfdf,
                           tunits="day",
                           attrname=1,
                         ...){
-  ##
+    
   nt=dim(stfdf)[2]
-  time = as.Date(index(stfdf@time))
+  time = as.POSIXlt(index(stfdf@time))
   times= seq(from=time[1], to=time[nt],  by = tunits)
   zcol = attrname
   
@@ -41,4 +41,5 @@ ret <- STFDF(stfdf@sp,
   
   return(ret)
 }
+
 

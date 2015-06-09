@@ -56,8 +56,8 @@ if(class(filename)=="RasterLayer") {r=filename} else{r= raster(filename) }
     sfInit ( parallel = TRUE, cpus =cpus) 
     sfst=FALSE}else{sfst=TRUE}
     
-    sfLibrary("raster")
-    sfLibrary("rgdal")
+    sfLibrary(raster)
+    sfLibrary(rgdal)
     
     sfExport( "poll" )
     sfExport( "r" )
@@ -65,24 +65,31 @@ if(class(filename)=="RasterLayer") {r=filename} else{r= raster(filename) }
     sfExport( "tilename" )
     sfExport( "format" )
     if(asfiles){
-     dir.create(tiles_folder)
-    tiles <- sfLapply(1:length(poll@polygons), function(i)  {
-      crop(r, poll[i,],filename= paste(tiles_folder,"/",tilename,i,".",format,sep=""), format=format) } )
+        if(!dir.exists(tiles_folder)){
+            dir.create(tiles_folder)
+        }
+        tiles <- sfLapply(1:length(poll@polygons), function(i)  {
+            crop(r, poll[i,]);
+            writeRaster(tiles[[1]], filename= paste(tiles_folder,"/",tilename,i,".",format,sep=""), format=format, overwrite=T) } )
     }else{
       tiles <- sfLapply(1:length(poll@polygons), function(i)  crop(r, poll[i,] )  )
     }
 
   }else{
     if(asfiles){
-     dir.create(tiles_folder)
-    for(i in 1:length(poll@polygons)){ tiles[i] <- crop(r, poll[i,], filename= paste(tiles_folder,"/",tilename,i,".",format,sep=""), format=format) }
-    }else{ for(i in 1:length(poll@polygons)){ tiles[i] <- crop(r, poll[i,]) }
+        if(!dir.exists(tiles_folder)){
+            dir.create(tiles_folder)
+        }
+        for(i in 1:length(poll@polygons)){ tiles[i] <- crop(r, poll[i,]);
+                                           writeRaster(tiles[i][[1]], filename= paste(tiles_folder,"/",tilename,i,".",format,sep=""), format=format, overwrite=T)
+        }
+    }else{
+        for(i in 1:length(poll@polygons)){ tiles[i] <- crop(r, poll[i,])}
     }
   }
 
   
   if(aspoints){
-    
     rem <- sapply(tiles, function(i) all(is.na(i@data@values) ) )
     tiles = tiles[!rem]
     tiles= lapply(tiles, function(i) rasterToPoints(i,spatial=TRUE) )
@@ -97,3 +104,4 @@ return(tiles)
   
 
   
+
