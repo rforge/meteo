@@ -6,5 +6,5 @@ import(sp,
   snowfall,
   gstat,
   plyr)
-export(meteo2STFDF,  pred.strk,  rm.dupl , tgeom2STFDF , tiling, rfillspgaps, rfilltimegaps)
+export(meteo2STFDF,  pred.strk, pred.strk1, rm.dupl, tgeom2STFDF , tiling, rfillspgaps, rfilltimegaps)
 
