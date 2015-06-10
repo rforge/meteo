@@ -9,7 +9,7 @@ This function finds point pairs with equal spatial coordinates from \link[spacet
 \arguments{
   \item{obj}{ \link[spacetime]{STFDF} object}
   \item{zcol}{ variable column name, or column number, from obj@data }
-  \item{zero.tol}{distance values less than or equal to this threshold value are considered as duplicates}
+  \item{zero.tol}{distance values less than or equal to this threshold value are considered as duplicates; units are those of the coordinates for projected data or unknown projection, or km if coordinates are defined to be longitute/latitude}
 }
 \value{ \link[spacetime]{STFDF} object with removed duplicate locations. Stations with less observation is removed, if number of observation is the same for two stations the first is removed.
 }
@@ -35,4 +35,5 @@ nrow(temp@sp) # number of stations before removing dupl.
 temp2 <-rm.dupl(temp)
 nrow(temp2@sp) # number of stations after
 }
+
 

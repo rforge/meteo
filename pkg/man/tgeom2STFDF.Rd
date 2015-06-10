@@ -45,3 +45,4 @@ stplot(tgSrb, col.regions = bpy.colors() ) # temp_geom for "2011-07-01" , "2011-
 % R documentation directory.
 %\keyword{ ~kwd1 }
 %\keyword{ ~kwd2 }% __ONLY ONE__ keyword per line
+

@@ -1,7 +1,7 @@
 \name{pred.strk}
 \alias{pred.strk}
 \title{Spatio-temporal regression kriging}
-\description{ Function for spatio-temporal regression kriging prediction based on \link[gstat]{krigeST}.}
+\description{ Function for spatio-temporal regression kriging prediction based on \link[gstat]{krigeST}. The prediction is made for raster objects, i.e. for \link[spacetime]{STFDF-class} objects.}
 \usage{
 pred.strk(temp,zcol = 1, newdata, pred.id = "tempPred", zero.tol = 0, 
          dynamic.cov = c(1, 2), static.cov = c(1, 2), 
@@ -122,11 +122,9 @@ stplot(res$pred, col.regions=bpy.colors())
 ## plot locations of removed stations
 # spplot(res$remst, zcol='station_name' , col.regions=bpy.colors())
 # plot removed stations as time-series
-# stplot(res$remobs[1:3,1:2,c('tempc','pred.cv')], mode='tp')
-
 # row.names(res$remobs@sp) = res$remst$station_name
-# res$remobs[1:3,1:2,c('tempc','pred.cv')]
-# stplot(res$remobs[1:3,1:2,c('tempc','pred.cv')], mode='tp')
+# res$remobs[,1:2,c('tempc','pred.cv')]
+# stplot(res$remobs[,1:2,c('tempc','pred.cv')], mode='tp')
 
 # Calculate prediction of mean temperature for "2011-07-05" "2011-07-06"
 # only MODIS is used as covariate
@@ -144,7 +142,8 @@ rkmod <-  pred.strk(temp,zcol=1, newdata= STFDF(regdata@sp,
                reg.coef= c(-0.23,0.7303284),
                vgm.model= modisVGM  )
                                            
-# coeficients and variogram is calculted globally for GSOD and ECA&D obs. for 2011 year 
+# coefficients and variogram is calculated globally for GSOD and ECA&D obs. for 2011 year 
 
 stplot(rkmod$pred, col.regions=bpy.colors())
 }
+
