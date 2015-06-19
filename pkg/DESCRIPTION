@@ -3,11 +3,16 @@ Type: Package
 Title: Spatio-temporal analysys and mapping of metorological observations
 Version: 0.1-3
 Date: 2015-06-11
-Author: Milan Kilibarda, Tomislav Hengl, Edzer Pebesma, Benedikt Graeler, Aleksandar Sekulic
+Authors@R: c(person("Milan", "Kilibarda", role = c("cre", "aut"),
+        email = "kili@grf.bg.ac.rs"),
+    person("Aleksandar", "Sekulic", role = "ctb"),
+    person("Tomislav", "Hengl", role = "ctb"),
+  person("Edzer", "Pebesma", role = "ctb"),
+  person("Benedikt", "Graeler", role = "ctb"))
 Maintainer: Milan Kilibarda <kili@grf.bg.ac.rs>
 Description: The meteo package provides functionality to spatio-temporal analysys and mapping of meteorological data. Global spatio-temporal models calculated using publicly available data are stored in package.
 License: GPL
 URL: http://meteo.r-forge.r-project.org/
 LazyLoad: yes
-Depends: R (>= 2.15.0)
+Depends: R (>= 3.0.0)
 Imports: sp, spacetime, rgdal, gstat, raster, snowfall, plyr
