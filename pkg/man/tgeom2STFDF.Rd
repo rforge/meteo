@@ -5,13 +5,12 @@
 \description{Calculate geometrical temperature trend for mean, minimum or maximum temperature.
 }
 \usage{
-tgeom2STFDF(grid, time, endTime=delta(time), variable = "mean",ab=NULL)
+tgeom2STFDF(grid, time, variable = "mean",ab=NULL)
 }
 \arguments{
   \item{grid}{ object of \link[sp]{Spatial-class} (Points, Grid or Pixels) with associated coordinate reference systems (\link[sp]{CRS-class}). If                       CRS is not defined longitude latitude is assumed. }
   \item{time}{object holding time information, reasonably it is day (calendar date), or vector of days
 }
-   \item{endTime}{end time points. for one day calculation endTime must be defined, as next day}
   \item{variable}{ character;\code{'mean'}, \code{'min'} or \code{'max'} ; geometrical temperature trend is calculated for mean, minimum or maximum; \code{'mean'} is default. }
     \item{ab}{Predefined coefficients to be used instead of incorporated.}
 }
@@ -25,7 +24,7 @@ Kilibarda, M., T. Hengl, G. B. M. Heuvelink, B. Graeler, E. Pebesma, M. Percec T
 library(sp)
 library(spacetime)
 pos <- SpatialPoints(coords = cbind(19.22,45.33)) # create one point from lon lat
-tg1 <- tgeom2STFDF(pos,as.POSIXct("2011-01-01"), endTime=as.POSIXct("2011-01-02") )  # temp_geom for 1st Jan 2011
+tg1 <- tgeom2STFDF(pos,as.POSIXct("2011-01-01") )  # temp_geom for 1st Jan 2011
 tg1
 
 tg365<- tgeom2STFDF(pos,time = seq(as.POSIXct("2011-01-01"), as.POSIXct("2011-12-31"), by="day") ) # temp_geom for the 2011 at pos location
