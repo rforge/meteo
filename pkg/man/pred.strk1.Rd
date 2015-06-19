@@ -22,7 +22,7 @@ pred.strk1(obs, stations, newdata, zero.tol=0,
                                     time =vgm(0, "Sph",  0.1, 0),
                                     joint=vgm(11.175, "Sph", 2117, 1.75),
                                     stAni=527) ) [['tmean']] ,
-           computeVar=FALSE, out.remove=FALSE, threshold.res=15, returnList=False)
+           computeVar=FALSE, out.remove=FALSE, threshold.res=15, returnList=FALSE)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -112,7 +112,7 @@ twi <- as.vector(twi)
 t1 <- which(as.character(index(time[1])) == as.character( index(temp@time)) )
 t2 <- which(as.character(index(time[ length(time) ])) == as.character(index(temp@time)) )
 
-temp <- temp[,t1:t2, drop=F]
+temp <- temp[,t1:t2, drop=FALSE]
 
 temp$temp_geo = temp_geo
 temp$modis = modis
