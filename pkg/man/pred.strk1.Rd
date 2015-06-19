@@ -48,7 +48,7 @@ An list object containing:
 A data frame object contains longitude (or x) and latitude (or y) column, time column (day of prediction) and prediction value.
 }
 
-\author{Milan Kilibarda \email{kili@grf.bg.ac.rs}  }
+\author{Aleksandar Sekulic \email{asekulic@grf.bg.ac.rs}, Milan Kilibarda \email{kili@grf.bg.ac.rs}  }
 \references{
 Kilibarda, M., T. Hengl, G. B. M. Heuvelink, B. Graeler, E. Pebesma, M. Percec Tadic, and B. Bajat (2014), Spatio-temporal interpolation of daily temperatures for global land areas at 1 km resolution, J. Geophys. Res. Atmos., 119, 2294-2313, doi:10.1002/2013JD020803.
 }
