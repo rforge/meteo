@@ -103,17 +103,14 @@ pred.strk <- function (temp,
   
   
   if(parallel.processing) {
-  sfInit ( parallel = parallel.processing , cpus =cpus)
-  sfLibrary(gstat)
-  sfLibrary(zoo)
-  sfLibrary(spacetime)
-  sfLibrary(sp)
-  sfExport("vgm.model" )
-  sfExport( "computeVar" )
-  sfExport( "i_1" )
-  sfExport( "ip1" )
-  sfExport( "time" )
-  sfExport( "temp" )
+    sfInit ( parallel = parallel.processing , cpus =cpus)
+    sfLibrary(package="gstat", character.only=TRUE)
+    sfExport("vgm.model" )
+    sfExport( "computeVar" )
+    sfExport( "i_1" )
+    sfExport( "ip1" )
+    sfExport( "time" )
+    sfExport( "temp" )
   }
   
 #   
@@ -193,9 +190,9 @@ pred.strk <- function (temp,
         N_POINTS <- length(cv.temp@sp@coords[,1])
         
         if(parallel.processing) {
-        sfExport( "cv.temp" )
-        sfExport( "N_POINTS" )
-        sfExport( "sp.nmax" )  }
+          sfExport( "cv.temp" )
+          sfExport( "N_POINTS" )
+          sfExport( "sp.nmax" )  }
         
         
         cv = as.list ( rep(NA, N_POINTS)) 
@@ -259,8 +256,8 @@ pred.strk <- function (temp,
     temp.local<-temp[,,'tres',drop=F]
     
     if(parallel.processing) {
-    sfExport( "temp.local" )
-    sfExport( "gg" )    } 
+      sfExport( "temp.local" )
+      sfExport( "gg" )    } 
     
     if (progress)   pb <- txtProgressBar(style = 3,char= sprintf("pred krigeST ") , max=length(time) )
     xxx<- (if (parallel.processing & length(time)>1) sfLapply else lapply )(1:length(time), function(i) {
@@ -335,11 +332,11 @@ pred.strk <- function (temp,
     st=temp@sp
     
     if(parallel.processing) {
-    sfExport( "temp.local" )
-    sfExport( "st" )
-    sfExport( "Mpts" )
-    sfExport( "g_list" )
-    sfExport( "sp.nmax" ) }
+      sfExport( "temp.local" )
+      sfExport( "st" )
+      sfExport( "Mpts" )
+      sfExport( "g_list" )
+      sfExport( "sp.nmax" ) }
 
     if (progress)   pb <- txtProgressBar(style = 3,char= sprintf("pred krigeST ") , max=length(g_list))
 
@@ -417,12 +414,12 @@ pred.strk <- function (temp,
       temp.local <-temp[ , ,'tres', drop = FALSE]
       st=temp.local@sp
       if(parallel.processing) {
-      sfExport( "temp.local" )
-      sfExport( "st" )
-      sfExport( "Mpts" )
-      sfExport( "g_list" )
-      sfExport( "sp.nmax" )
-      sfExport( "computeVar" ) }
+        sfExport( "temp.local" )
+        sfExport( "st" )
+        sfExport( "Mpts" )
+        sfExport( "g_list" )
+        sfExport( "sp.nmax" )
+        sfExport( "computeVar" ) }
       if (progress)   pb <- txtProgressBar(style = 3,char= sprintf("pred krigeST "), max=length(g_list) )
       
       res =   (if (parallel.processing) sfLapply else lapply )(1:length(g_list), function(i) 

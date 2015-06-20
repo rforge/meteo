@@ -2,7 +2,7 @@
 \docType{data}
 \encoding{utf8}
 \alias{dtempc}
-\title{Mean daily temperature in degrees Celsius for july 2011}
+\title{Mean daily temperature in degrees Celsius for July 2011}
 \description{Sample data set showing values of merged mean daily temperature measurements from the Global Surface Summary of Day data (GSOD) with European Climate Assessment & Dataset (ECA&D) data for the month July 2011.}
 \usage{data(dtempc)}
 \format{

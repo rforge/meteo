@@ -53,11 +53,11 @@ if(class(filename)=="RasterLayer") {r=filename} else{r= raster(filename) }
   
   if(parallel.processing){
     if(!sfParallel()){
-    sfInit ( parallel = TRUE, cpus =cpus) 
-    sfst=FALSE}else{sfst=TRUE}
+      sfInit ( parallel = TRUE, cpus =cpus) 
+      sfst=FALSE}else{sfst=TRUE}
     
-    sfLibrary(raster)
-    sfLibrary(rgdal)
+    sfLibrary(package="raster", character.only=TRUE)
+    sfLibrary(package="rgdal", character.only=TRUE)
     
     sfExport( "poll" )
     sfExport( "r" )
