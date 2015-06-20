@@ -145,5 +145,14 @@ rkmod <-  pred.strk(temp,zcol=1, newdata= STFDF(regdata@sp,
 # coefficients and variogram is calculated globally for GSOD and ECA&D obs. for 2011 year 
 
 stplot(rkmod$pred, col.regions=bpy.colors())
+# parallel processing
+library(snowfall)
+rkmod <-  pred.strk(temp,zcol=1, newdata= STFDF(regdata@sp,
+                time=as.POSIXct("2011-07-05"), endTime=as.POSIXct("2011-07-06"), 
+                data=regdata[,1]@data) , threshold.res=10, 
+              dynamic.cov='modis', static.cov=NULL,
+               reg.coef= c(-0.23,0.7303284),
+               vgm.model= modisVGM, parallel.processing=TRUE)
+
 }
 
