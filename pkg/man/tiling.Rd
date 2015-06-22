@@ -5,13 +5,13 @@
 }
 \usage{
 tiling(filename,tilesize=500,overlapping=50, aspoints= FALSE, 
-       asfiles=FALSE,tilename="tile", format="GTiff", tiles_folder=paste(getwd(),'tiles',sep='/'), 
-       parallel.processing=FALSE, cpus=6)
+       asfiles=FALSE,tilename="tile", format="GTiff", 
+       tiles_folder=paste(getwd(),'tiles',sep='/'), parallel.processing=FALSE, cpus=6)
 }
 \arguments{
   \item{filename}{raster object, SpatialPixels* object, SpatialGrid* object or file path of raster object stored on the disk (can be read via \link[rgdal]{readGDAL}), for more details see \link[raster]{raster}. The  resolution of object should be the same in x and y direction.
 }
-  \item{tilesize}{tile size in cells in x direction. nx = ny is assumed, total number of tile cells is \code{tilesize} by           \code{tilesize}. }
+  \item{tilesize}{tile size in cells in x direction. nx = ny is assumed, total number of tile cells is \code{tilesize} by \code{tilesize}. }
   \item{overlapping}{overlapping cells in each direction}
   \item{aspoints}{if TRUE tiles are in form of \code{SpatialPointsDataFrame} }
   \item{asfiles}{if TRUE tiles are stored on local drive as raster objects}
