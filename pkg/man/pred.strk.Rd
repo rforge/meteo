@@ -4,11 +4,11 @@
 \description{ Function for spatio-temporal regression kriging prediction based on \link[gstat]{krigeST}. The prediction is made for raster objects, i.e. for \link[spacetime]{STFDF-class} objects.}
 \usage{
 pred.strk(temp,zcol = 1, newdata, pred.id = "tempPred", zero.tol = 0, 
-         dynamic.cov = c(1, 2), static.cov = c(1, 2), 
-         reg.coef=list( tmean= c(-0.1265044154,0.4051734447,0.4943247727,0.0001837527,-0.0189207588),  
-                 tmin = c(-0.9825601517,0.5672140021,0.3344561638, 0.0003119777,-0.0243629638),
-                 tmax = c(1.7873573081,0.350228076, 0.5569091092, 0.0002571338,-0.0012988123) ) [[ 'tmean']] ,
-         vgm.model=list( tmean=vgmST("sumMetric",
+  dynamic.cov = c(1, 2), static.cov = c(1, 2),
+reg.coef=list(tmean=c(-0.126504415,0.4051734447,0.4943247727,0.0001837527,-0.0189207588),  
+tmin = c(-0.9825601517,0.5672140021,0.3344561638, 0.0003119777,-0.0243629638),
+tmax = c(1.7873573081,0.350228076, 0.5569091092, 0.0002571338,-0.0012988123))[['tmean']],
+vgm.model=list( tmean=vgmST("sumMetric",
                                 space=vgm( 14.13, "Sph", 5903, 1.933),
                                 time =vgm(0, "Sph",  0.1, 0),
                                 joint=vgm(9.06, "Sph", 2054, 0.474),
@@ -23,9 +23,9 @@ pred.strk(temp,zcol = 1, newdata, pred.id = "tempPred", zero.tol = 0,
                                  time =vgm(0, "Sph",  0.1, 0),
                                  joint=vgm(11.175, "Sph", 2117, 1.75),
                                  stAni=527) ) [['tmean']] ,
-        tiling = FALSE, ntiles = 64, parallel.processing = FALSE, cpus = 3, 
-        sp.nmax = 18, time.nmax = 2,fast = FALSE, computeVar = FALSE, 
-        do.cv = FALSE, only.cv = FALSE, out.remove = FALSE, threshold.res = 15,progress=TRUE)
+tiling = FALSE, ntiles = 64, parallel.processing = FALSE, cpus = 3, 
+sp.nmax = 18, time.nmax = 2,fast = FALSE, computeVar = FALSE, 
+do.cv = FALSE, only.cv = FALSE, out.remove = FALSE, threshold.res = 15,progress=TRUE)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -77,40 +77,38 @@ Kilibarda, M., T. Hengl, G. B. M. Heuvelink, B. Graeler, E. Pebesma, M. Percec T
 # prepare data
 # load observation - data.frame of mean temperatures
 data(dtempc) 
-str(dtempc)
+# str(dtempc)
 data(stations)
 library(sp)
 library(spacetime)
 library(gstat)
-#
-str(stations)
-# lonmin,lonmax,lonmax, lonmin   latmin, latnmin,latmax,latmax
+
+# str(stations)
+## lonmin,lonmax,lonmax, lonmin   latmin, latnmin,latmax,latmax
 serbia= point.in.polygon(stations$lon, stations$lat, c(18,22.5,22.5,18), c(40,40,46,46))
 st= stations[ serbia!=0, ]
 # create STFDF
 temp <- meteo2STFDF(dtempc,st)
 rm(dtempc)
-str(temp)
+# str(temp)
 # Adding CRS
 temp@sp@proj4string <- CRS('+proj=longlat +datum=WGS84')
 
 # load covariates for mean temperatures
 data(regdata)
-str(regdata)
+# str(regdata)
 regdata@sp@proj4string <- CRS('+proj=longlat +datum=WGS84')
 
-# Calculate prediction of mean temperatures for "2011-07-05" "2011-07-06"
+# Calculate prediction of mean temperatures for "2011-07-05" 
 # global model is used for regression and variogram
 # load precalculated variograms
 data(tvgms)
 data(tregcoef)
-res= pred.strk(temp,zcol=1, newdata= regdata[,1:2], 
-              reg.coef=tregcoef[[1]] ,vgm.model=tvgms[[1]] )
-
-# res <-  pred.strk(temp,zcol=1, newdata=  regdata[,1,drop=F],vgm.model=tvgms[[1]] )
+res= pred.strk(temp,zcol=1, newdata= regdata[,1,drop=FALSE], 
+              reg.coef=tregcoef[[1]] ,vgm.model=tvgms[[1]], progress=FALSE )
 
 # plot prediction
-stplot(res$pred, col.regions=bpy.colors())
+# stplot(res$pred, col.regions=bpy.colors())
 
 
 # res= pred.strk(temp,zcol=1, newdata= regdata[,1:2], 
@@ -126,33 +124,36 @@ stplot(res$pred, col.regions=bpy.colors())
 # res$remobs[,1:2,c('tempc','pred.cv')]
 # stplot(res$remobs[,1:2,c('tempc','pred.cv')], mode='tp')
 
-# Calculate prediction of mean temperature for "2011-07-05" "2011-07-06"
-# only MODIS is used as covariate
+## Calculate prediction of mean temperature for "2011-07-05" "2011-07-06"
+## only MODIS is used as covariate
 
-modisVGM =vgmST("sumMetric",space=vgm( 18.27, "Sph", 6000, 3.22),
-                                           time =vgm(0, "Sph",  0.1, 0),
-                                           joint=vgm(8.34, "Sph", 2349, 1.80),
-                                           stAni=583)
-attr(modisVGM,"temporal unit") = "days"                                           
+# modisVGM =vgmST("sumMetric",space=vgm( 18.27, "Sph", 6000, 3.22),
+#                                           time =vgm(0, "Sph",  0.1, 0),
+#                                           joint=vgm(8.34, "Sph", 2349, 1.80),
+#                                           stAni=583)
+# attr(modisVGM,"temporal unit") = "days"                                           
 
-rkmod <-  pred.strk(temp,zcol=1, newdata= STFDF(regdata@sp,
-                time=as.POSIXct("2011-07-05"), endTime=as.POSIXct("2011-07-06"), 
-                data=regdata[,1]@data) , threshold.res=10, 
-              dynamic.cov='modis', static.cov=NULL,
-               reg.coef= c(-0.23,0.7303284),
-               vgm.model= modisVGM  )
+# rkmod <-  pred.strk(temp,zcol=1, newdata= STFDF(regdata@sp,
+#                time=as.POSIXct("2011-07-05"), endTime=as.POSIXct("2011-07-06"), 
+#                data=regdata[,1]@data) , threshold.res=10, 
+#              dynamic.cov='modis', static.cov=NULL,
+#               reg.coef= c(-0.23,0.7303284),
+#               vgm.model= modisVGM  )
                                            
-# coefficients and variogram is calculated globally for GSOD and ECA&D obs. for 2011 year 
+## coefficients and variogram is calculated globally for GSOD and ECA&D obs. for 2011 year 
 
-stplot(rkmod$pred, col.regions=bpy.colors())
+# stplot(rkmod$pred, col.regions=bpy.colors())
+
 # parallel processing
-library(snowfall)
-rkmod <-  pred.strk(temp,zcol=1, newdata= STFDF(regdata@sp,
-                time=as.POSIXct("2011-07-05"), endTime=as.POSIXct("2011-07-06"), 
-                data=regdata[,1]@data) , threshold.res=10, 
-              dynamic.cov='modis', static.cov=NULL,
-               reg.coef= c(-0.23,0.7303284),
-               vgm.model= modisVGM, parallel.processing=TRUE)
+# library(snowfall)
+# rkmod <-  pred.strk(temp,zcol=1, 
+#                   newdata= STFDF(regdata@sp,
+#                    time=as.POSIXct("2011-07-05"), endTime=as.POSIXct("2011-07-06"), 
+#                    data=regdata[,1]@data) ,
+#                     threshold.res=10, 
+#                     dynamic.cov='modis', static.cov=NULL,
+#                     reg.coef= c(-0.23,0.7303284),
+#                     vgm.model= modisVGM, parallel.processing=TRUE)
 
 }
 
