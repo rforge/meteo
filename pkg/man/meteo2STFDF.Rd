@@ -2,7 +2,8 @@
 \alias{meteo2STFDF}
 \title{Create an object of \link[spacetime]{STFDF} class from two data frames (observation and stations) }
 \description{The function creates an object of \link[spacetime]{STFDF} class, spatio-temporal data with full space-time grid, from two data frames (observation and stations). Observations data frame minimum contains station ID column, time column (day of observation) and measured variable column. Stations data frame contains at least station ID column, longitude (or x) and latitude (or y) column.}
-\usage{meteo2STFDF(obs, stations, obs.staid.time = c(1, 2), stations.staid.lon.lat = c(1, 2, 3), crs=CRS(as.character(NA)), delta=NULL ) }
+\usage{meteo2STFDF(obs, stations, obs.staid.time = c(1, 2), 
+            stations.staid.lon.lat = c(1, 2, 3), crs=CRS(as.character(NA)), delta=NULL )}
 \arguments{
 \item{obs}{ data.frame; observations data frame minimum contains station ID column, time column (day of observation) and measured variable column. It can contain additional variables (columns).}
   \item{stations}{ data.frame; Stations data frame contains at least station ID column, longitude (or x) and latitude (or y) column.It can contain additional variables (columns).}
@@ -32,7 +33,8 @@ str(stations)
 lonmin=18 ;lonmax=22.5 ; latmin=40 ;latmax=46
 library(sp)
 library(spacetime)
-serbia = point.in.polygon(stations$lon, stations$lat, c(lonmin,lonmax,lonmax,lonmin), c(latmin,latmin,latmax,latmax))
+serbia = point.in.polygon(stations$lon, stations$lat, c(lonmin,lonmax,lonmax,lonmin), 
+                          c(latmin,latmin,latmax,latmax))
 st= stations[ serbia!=0, ] # stations in Serbia approx.
 # create STFDF
 temp <- meteo2STFDF(dtempc,st, crs= CRS('+proj=longlat +datum=WGS84'))
