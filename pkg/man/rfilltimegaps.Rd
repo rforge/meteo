@@ -31,31 +31,34 @@ Kilibarda M., M. Percec Tadic, T. Hengl, J. Lukovic, B. Bajat - Spatial Statisti
 \code{\link{pred.strk}}
 }
 \examples{
-   data(nlmodis20110704)
-   data(nlmodis20110712)
-   data(NLpol)
-   
-   # fill spatial gaps
-   r1=rfillspgaps(nlmodis20110704,NLpol)
-   r2=rfillspgaps(nlmodis20110712,NLpol)
-   
-   r1 <- as(r1,"SpatialPixelsDataFrame")
-   names(r1)='m1'
-   r2 <- as(r2,"SpatialPixelsDataFrame")
-   names(r2)='m2'
+  data(nlmodis20110704)
+  data(nlmodis20110712)
 
-   r1@data <- cbind(r1@data, r2@data)
-   
-   df <- reshape(r1@data, varying=list(1:2), v.names="modis", direction="long", 
-                 times=as.Date(c('2011-07-04','2011-07-12')), ids=1:dim(r1)[1])
-   
-   library(spacetime)
-   stMODIS<- STFDF(as(r1, "SpatialPixels"), 
+  
+  # fill spatial gaps
+  library(raster)
+  NLpol <- as(extent(5, 6, 51.5, 52), 'SpatialPolygons')
+  NLpol@proj4string <- nlmodis20110704@proj4string
+  nlmodis20110704 <- rfillspgaps(nlmodis20110704,NLpol)
+  nlmodis20110712 <- rfillspgaps(nlmodis20110712,NLpol)
+  
+  nlmodis20110704 <- as(nlmodis20110704,"SpatialPixelsDataFrame")
+  names(nlmodis20110704)='m1'
+  nlmodis20110712 <- as(nlmodis20110712,"SpatialPixelsDataFrame")
+  names(nlmodis20110712)='m2'
+  
+  nlmodis20110704@data <- cbind(nlmodis20110704@data, nlmodis20110712@data)
+  
+  df<-reshape(nlmodis20110704@data , varying=list(1:2), v.names="modis",direction="long", 
+            times=as.Date(c('2011-07-04','2011-07-12')), ids=1:dim(nlmodis20110704)[1])
+  
+  library(spacetime)
+  stMODIS<- STFDF(as( nlmodis20110704, "SpatialPixels"), 
                   time= as.Date(c('2011-07-04','2011-07-12')), 
                   data.frame(modis=df[,'modis']))
-   
-   # stplot(stMODIS, col.regions=bpy.colors())
-   stMODIS <- rfilltimegaps(stMODIS)
-   # stplot(stMODIS, col.regions=bpy.colors())
+  
+  # stplot(stMODIS, col.regions=bpy.colors())
+  stMODIS <- rfilltimegaps(stMODIS)
+  # stplot(stMODIS, col.regions=bpy.colors())
 }
 
