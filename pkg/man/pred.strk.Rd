@@ -109,19 +109,24 @@ data(tregcoef)
 res= pred.strk(temp,zcol=1, newdata= regdata[,1,drop=FALSE], 
               reg.coef=tregcoef[[1]] ,vgm.model=tvgms[[1]], progress=FALSE )
 
-# plot prediction
+## plot prediction
 # stplot(res$pred, col.regions=bpy.colors())
 
 
-# res= pred.strk(temp,zcol=1, newdata= regdata[,1:2], 
+# t1= temp[regdata@sp,]
+# # create fake observations
+# t1@data$tempc[seq(1,120,by=8)] =35
+# 
+# 
+# res= pred.strk(t1,zcol=1, newdata= regdata[,1:2], 
 #                reg.coef=tregcoef[[1]], vgm.model=tvgms[[1]] , 
-#                threshold.res=3, do.cv=T, out.remove = T)
-## plot cross validation residuals 
+#                threshold.res=5, do.cv=T, out.remove = T)
+# # plot cross validation residuals 
 # stplot(res$cv[,,'resid.cv'] , col.regions=bpy.colors())
-
-## plot locations of removed stations
+# 
+# # plot locations of removed stations
 # spplot(res$remst, zcol='station_name' , col.regions=bpy.colors())
-# plot removed stations as time-series
+# #plot removed stations as time-series
 # row.names(res$remobs@sp) = res$remst$station_name
 # res$remobs[,1:2,c('tempc','pred.cv')]
 # stplot(res$remobs[,1:2,c('tempc','pred.cv')], mode='tp')
@@ -146,7 +151,7 @@ res= pred.strk(temp,zcol=1, newdata= regdata[,1,drop=FALSE],
 
 # stplot(rkmod$pred, col.regions=bpy.colors())
 
-# parallel processing
+## parallel processing
 # library(snowfall)
 # rkmod <-  pred.strk(temp,zcol=1, 
 #                   newdata= STFDF(regdata@sp,
