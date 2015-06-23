@@ -36,7 +36,7 @@ pred.strk <- function (temp,
                        out.remove = FALSE,
                        threshold.res=15,
                        progress=TRUE){
-  
+  if( sp.nmax > nrow(temp@sp) ) {sp.nmax <- nrow(temp@sp) }
   temp <- rm.dupl(temp, zcol,zero.tol)
   gg <- newdata
   time <- gg@time
@@ -203,7 +203,7 @@ pred.strk <- function (temp,
           st$dist=spDists(cv.temp@sp,cv.temp@sp[i,] )
           
           tmp_st<-st[ order(st$'dist') , ]
-          
+          if( sp.nmax > nrow(tmp_st) ) {sp.nmax <- nrow(tmp_st) }
           local_t= row.names(tmp_st[2:sp.nmax,] ) # remove target station
           
           xxx = as.list ( rep(NA, length(time) ) )
