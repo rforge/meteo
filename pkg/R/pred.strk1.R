@@ -2,7 +2,7 @@ pred.strk1 <- function (obs,
                         stations,
                         newdata,
                         zero.tol=0,
-                        reg.coef=list(tmean= c(-0.1265044154,0.4051734447,0.4943247727,0.0001837527,-0.0189207588), # Intercept, temp_geo,modis,dem,twi 
+                        reg.coef=list(tmean= c(-0.126504415,0.4051734447,0.4943247727,0.0001837527,-0.0189207588), # Intercept, temp_geo,modis,dem,twi 
                                       tmin = c(-0.9825601517,0.5672140021,0.3344561638, 0.0003119777,-0.0243629638),
                                       tmax = c(1.7873573081,0.350228076, 0.5569091092, 0.0002571338,-0.0012988123) ) [[ 'tmean']] ,
                         vgm.model=list(tmean=vgmST("sumMetric",
