@@ -42,7 +42,7 @@ tgeom2STFDF <- function(grid,
   day<- as.numeric( strftime(time, format = "%j") )
   
   tg<-lapply(day, function(i) temp_geom(i,grid1@coords[,2],a,b) )
-  tg=do.call('rbind',tg)
+  tg=do.call('cbind',tg)
   tg=as.vector(tg)
   tg=data.frame(temp_geo=tg)
   
