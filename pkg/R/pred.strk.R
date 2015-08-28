@@ -36,7 +36,7 @@ pred.strk <- function (temp,
                        out.remove = FALSE,
                        threshold.res=15,
                        progress=TRUE){
-  if( sp.nmax > nrow(temp@sp) ) {sp.nmax <- nrow(temp@sp) }
+ 
   temp <- rm.dupl(temp, zcol,zero.tol)
   gg <- newdata
   time <- gg@time
@@ -95,6 +95,7 @@ pred.strk <- function (temp,
        
        
      } # end of regression 
+  if( sp.nmax > nrow(temp@sp) ) {sp.nmax <- nrow(temp@sp) }
   
   i_1 <- (1:length(time)) - ceiling(time.nmax/2)
   i_1[i_1<1]=1        
@@ -147,7 +148,7 @@ pred.strk <- function (temp,
       xxx = as.list ( rep(NA, length(time) ) )
       for( ii in 1:length(time) ) {
         xxx[[ii]]=krigeST(as.formula("tres~1"),
-                          data=temp[local_t, i_1[ii]:ip1[ii],'tres',drop=F], 
+                          data=as(temp[local_t, i_1[ii]:ip1[ii],'tres',drop=F], "STSDF"),
                           newdata=STF(as(temp@sp[i,],"SpatialPoints"),
                                       temp@time[ii],  
                                       temp@endTime[ii]),     
@@ -209,7 +210,7 @@ pred.strk <- function (temp,
           xxx = as.list ( rep(NA, length(time) ) )
           for( ii in 1:length(time) ) {
             xxx[[ii]]=krigeST(as.formula("tres~1"),
-                              data=temp[local_t, i_1[ii]:ip1[ii],'tres', drop=F],
+                              data=as(temp[local_t, i_1[ii]:ip1[ii],'tres',drop=F], "STSDF"),
                               newdata=STF(as(cv.temp@sp[i,],"SpatialPoints"),
                                           cv.temp@time[ii],  
                                           cv.temp@endTime[ii]),     
@@ -269,7 +270,7 @@ pred.strk <- function (temp,
       
         
       ret= krigeST(as.formula("tres~1"),
-              data=obs, # [,1:6] # in this case I must to limit for the fist few days
+              data=as(obs, "STSDF"), # [,1:6] # in this case I must to limit for the fist few days
               newdata=STF(as(gg@sp,"SpatialPoints"),
                           temp.local@time[i],    # [3]    
                           #srb@data,  # [3,1]
@@ -354,7 +355,7 @@ pred.strk <- function (temp,
       xxx = as.list ( rep(NA, length(time) ) )
       for( ii in 1:length(time) ) {
         xxx[[ii]]=krigeST(as.formula("tres~1"),
-                          data=temp.local[local_t, i_1[ii]:ip1[ii],'tres', drop=F], 
+                          data=as(temp[local_t, i_1[ii]:ip1[ii],'tres',drop=F], "STSDF"), 
                           newdata=STF(as(g_list[[i]],"SpatialPoints"),
                                       temp.local@time[ii],  
                                       temp.local@endTime[ii]),     
@@ -436,7 +437,7 @@ pred.strk <- function (temp,
         xxx = as.list ( rep(NA, length(time) ) )
         for( ii in 1:length(time) ) {
           xxx[[ii]]=krigeST(as.formula("tres~1"),
-                            data=temp.local[local_t, i_1[ii]:ip1[ii],'tres', drop=F], 
+                            data=as(temp[local_t, i_1[ii]:ip1[ii],'tres',drop=F], "STSDF"), 
                             newdata=STF(as(g_list[[i]],"SpatialPoints"),
                                         temp.local@time[ii],  
                                         temp.local@endTime[ii]),     
