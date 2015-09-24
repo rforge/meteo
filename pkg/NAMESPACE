@@ -1,4 +1,8 @@
 #
+#import(methods)
+importFrom("methods", "as")
+importFrom("stats", "as.formula", "reshape", "spline")
+importFrom("utils", "setTxtProgressBar", "txtProgressBar")
 import(sp,
   spacetime,
   rgdal,
