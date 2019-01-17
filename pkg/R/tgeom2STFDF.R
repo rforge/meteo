@@ -33,12 +33,10 @@ tgeom2STFDF <- function(grid,
 
   if(class(grid) == 'SpatialGrid' | class(grid) == 'SpatialGridDataFrame') {
   grid <- as(grid,'SpatialPixels') }
-#   
-#   grid <- as(grid,'SpatialPoints')
   
   if(!is.na(grid@proj4string@projargs )){ grid1 <- spTransform(grid, CRS('+proj=longlat +datum=WGS84') ) } else { grid1 <- grid}
   
-  time <- as.POSIXct(sort(time))
+  time <- as.POSIXlt(sort(time))
   day<- as.numeric( strftime(time, format = "%j") )
   
   tg<-lapply(day, function(i) temp_geom(i,grid1@coords[,2],a,b) )
@@ -46,11 +44,7 @@ tgeom2STFDF <- function(grid,
   tg=as.vector(tg)
   tg=data.frame(temp_geo=tg)
   
-  if(length(time)==1){
-    endTime=time+86400
-  } else{
-    endTime=delta(time)
-  }
+  endTime=time+86400
 
   res <- STFDF(grid,time,data=tg,endTime=endTime)
   

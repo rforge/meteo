@@ -16,7 +16,7 @@
 
 }
 \value{ \link[spacetime]{STFDF} object}
-\author{Milan Kilibarda \email{kili@grf.bg.ac.rs}}
+\author{Milan Kilibarda \email{kili@grf.bg.ac.rs}, ALeksandar Sekulic \email{asekulic@grf.bg.ac.rs}}
 \note{The function is intended for conversion of meteorological data to \link[spacetime]{STFDF} object, but can be used for similar spatio temporal data stored in two separated tables.}
 \seealso{
 \code{\link{tgeom2STFDF}}

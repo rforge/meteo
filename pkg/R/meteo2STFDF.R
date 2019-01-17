@@ -6,37 +6,40 @@ meteo2STFDF <- function(obs,
                         delta=NULL
                         ) {
  
-           
-  ids <- unique(stations[,obs.staid.time[1]])
+  ids <- unique(stations[,stations.staid.lon.lat[1]])
   
   time <- unique(obs[,obs.staid.time[2] ])
   time <- as.POSIXlt(sort(time))
   
-  nt <- length(time)
-  ns <- length(ids) # num os stations
+  nt <- length(time) # num of dates
+  ns <- length(ids) # num of stations
   
   
   tempdf <- data.frame(rep(ids,nt),rep(time,each=ns) ) 
   names(tempdf) <- names(obs)[obs.staid.time]
   
   #   require(plyr)
-  data <- join(tempdf,obs)
+  data <- join(tempdf, obs, match = "first")
   
-  data <- data[ order( data[,obs.staid.time[1] ]), ]
-  data <- data[ order( data[,obs.staid.time[2] ]), ] # sort like 1st station 1st date, 2nd stations. 1st date ... check it carefuly 
+  # sort like 1st station 1st date, 2nd stations. 1st date ... 
+  data <- data[ order( data[, 1]), ] # sort by station id, it is always 1!
+  data <- data[ order( data[, 2]), ] # sort by time, it is always 2!
   row.names(data) <- 1:length(data[,1])
   
   # system.time( merge(tempdf,obs, all=TRUE) )
   # system.time(join(tempdf,obs) )
   # join is 2 x faster
   ids <- data.frame(staid=ids)
+  ids <- ids[ order( ids[, 1]), ]
+  ids <- as.data.frame(ids)
   names(ids) <- names(stations) [ stations.staid.lon.lat[1] ]
+  
   st <- join( ids, stations)
   names(st)[ stations.staid.lon.lat[2:3] ] <- c('lon', 'lat')
   coordinates(st) <-~ lon +lat
   st@proj4string <- crs
   
-  data <- as.data.frame(data[,-obs.staid.time] )
+  data <- as.data.frame(data[,-c(1,2)])
   names(data)= names(obs)[-obs.staid.time]
   
   if (is.null(delta) && length(time)==1){
@@ -50,11 +53,16 @@ meteo2STFDF <- function(obs,
   }
 
   # count NAs per stations
-  bools2 <- apply(matrix(stfdf@data[,1],
-                         nrow=length(stfdf@sp),byrow=F), MARGIN=1,
-                  FUN=function(x) sum(is.na(x)))
+  
+  bools2 <- c()
+  for (i in 1:ncol(stfdf@data)){
+    bools2 <- cbind(bools2, apply(matrix(stfdf@data[, i],
+                           nrow=length(stfdf@sp),byrow=F), MARGIN=1,
+                    FUN=function(x) sum(is.na(x))))
+  }
+  bools2 <- apply(bools2, 1, sum)
   # remove all NA
-  stfdf1=stfdf[bools2!=nt,drop=F]
+  stfdf=stfdf[bools2!=(nt*ncol(stfdf@data)), ,drop=F]
   
   row.names(stfdf@sp) <- 1:nrow(stfdf@sp)
   
