@@ -38,7 +38,7 @@ serbia = point.in.polygon(stations$lon, stations$lat, c(lonmin,lonmax,lonmax,lon
                           c(latmin,latmin,latmax,latmax))
 stations= stations[ serbia!=0, ] # stations in Serbia approx.
 # create STFDF
-temp <- meteo2STFDF(dtempc,st, crs= CRS('+proj=longlat +datum=WGS84'))
+temp <- meteo2STFDF(dtempc,stations, crs= CRS('+proj=longlat +datum=WGS84'))
 str(temp)
 # get one day (SpatialPointsDataFrame)
 temp <- temp[, 1]
