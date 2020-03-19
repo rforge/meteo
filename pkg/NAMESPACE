@@ -9,6 +9,7 @@ import(sp,
   raster,
   snowfall,
   gstat,
-  plyr)
-export(meteo2STFDF,  pred.strk, pred.strk1, rm.dupl, tgeom2STFDF , tiling, rfillspgaps, rfilltimegaps)
+  plyr,
+  nabor)
+export(meteo2STFDF,  pred.strk, pred.strk1, rm.dupl, tgeom2STFDF , tiling, rfillspgaps, rfilltimegaps, near.obs)
 
