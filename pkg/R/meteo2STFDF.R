@@ -9,7 +9,7 @@ meteo2STFDF <- function(obs,
   ids <- unique(stations[,stations.staid.lon.lat[1]])
   
   time <- unique(obs[,obs.staid.time[2] ])
-  time <- as.POSIXlt(sort(time))
+  time <- sort(time)# as.POSIXlt(sort(time))
   
   nt <- length(time) # num of dates
   ns <- length(ids) # num of stations
@@ -43,12 +43,12 @@ meteo2STFDF <- function(obs,
   names(data)= names(obs)[-obs.staid.time]
   
   if (is.null(delta) && length(time)==1){
-    endTime <- time + 86400
+    endTime <- as.POSIXct(time + 86400)
     stfdf <-STFDF(st, time , data, endTime)
   } else if (is.null(delta) && length(time)!=1) {
     stfdf <-STFDF(st, time , data)
   } else {
-    endTime <- time + delta
+    endTime <- as.POSIXct(time + delta)
     stfdf <-STFDF(st, time , data, endTime)
   }
 
